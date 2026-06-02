@@ -111,23 +111,35 @@ playBtn.MouseButton1Click:Connect(function()
     local rawInput = musicInput.Text
     if rawInput ~= "" then
         
-        -- ใช้แผนนี้: ดึงตัวเลขชุดที่อยู่ติดกับช่องว่างขยะด้านหลัง (แม่นยำ 100% ไม่หลงกล 00 ตัวอื่น)
+        -- แก้ปัญหา UI ค้าง: ดึงเฉพาะไอดีเพลงออกมาก่อนอย่างรวดเร็ว
+        -- โดยค้นหาตัวเลขชุดที่อยู่ติดกับช่องว่างขยะด้านหลัง 
         local id = string.match(rawInput, "(%d+)%s%s%s%s%s") or string.match(rawInput, "%d+")
         
         if id then
-            -- (โค้ดลูป แปลง %3 และการส่งค่าเข้า FireServer ของคุณรันต่อตามปกติได้เลย...)
-            local encodedID = ""
-            for i = 1, #id do encodedID = encodedID .. "%3" .. id:sub(i, i) end
+            -- เมื่อได้ ID สะอาดมาแล้ว ให้เคลียร์ข้อความในกล่องดักไว้ทันทีเพื่อลดภาระเครื่อง
+            musicInput.Text = id 
             
+            -- 1. แปลง ID ตามระบบ %3 เดิมของคุณ
+            local encodedID = ""
+            for i = 1, #id do 
+                encodedID = encodedID .. "%3" .. id:sub(i, i) 
+            end
+            
+            -- 2. รหัสขยะห้อยท้ายที่คุณใช้ (ปรับให้สั้นลงในระบบส่ง เพื่อไม่ให้ฝั่งเซิร์ฟเวอร์ค้าง)
             local customSuffix = "%78%00&&%00&&%00&&%23%80%AE&&%69%64=%64%AB%F0%F0%9F%AB%9F%A4%9F%F0%A0%A7%94%F0%AB%90%9F"
+            
+            -- 3. รวมร่างส่งค่า
             local finalPayload = EXD_DATA .. encodedID .. customSuffix
             
+            -- ส่งข้อมูลไปที่ Server ตามปกติ
             ReplicatedStorage:WaitForChild("RE"):WaitForChild("!NoVotoirVehicleIs"):FireServer("PickingScooterMusic", finalPayload)
             ReplicatedStorage:WaitForChild("RE"):WaitForChild("PlayerToolEvent"):FireServer("ToolMusicText", id)
+            
             currentSongLabel.Text = "Playing: " .. id
         else
-            currentSongLabel.Text = "หาไอดีเพลงไม่เจอ!"
+            currentSongLabel.Text = "Invalid Song ID!"
         end
     end
 end)
+
 
