@@ -1,264 +1,173 @@
--- [[สคริปต์จาก 191 | สร้างโดย Hon]] --
-
+-- [[ DELTA MUSIC EXECUTOR WITH TOGGLE ]] --
 local UserInputService = game:GetService("UserInputService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
 
--- ลบ UI เก่าถ้ามีอยู่
-if PlayerGui:FindFirstChild("Hon_Music_BypassUI") then
-    PlayerGui.Hon_Music_BypassUI:Destroy()
-end
-
--- สร้าง ScreenGui
+-- 1. สร้าง ScreenGui
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "Hon_Music_BypassUI"
+ScreenGui.Name = "DeltaMusicUI_Toggle"
+ScreenGui.Parent = game:GetService("CoreGui")
 ScreenGui.ResetOnSpawn = false
-ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-ScreenGui.Parent = PlayerGui
 
--- หน้าต่างหลัก (Main Frame)
-local MainFrame = Instance.new("Frame")
-MainFrame.Name = "MainFrame"
-MainFrame.Size = UDim2.new(0, 320, 0, 260)
-MainFrame.Position = UDim2.new(0.5, -160, 0.4, -130)
-MainFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-MainFrame.BorderSizePixel = 0
-MainFrame.ClipsDescendants = true
-MainFrame.Parent = ScreenGui
-
--- ใส่ความมนให้มุมหน้าต่าง
-local MainCorner = Instance.new("UICorner")
-MainCorner.CornerRadius = UDim.new(0, 8)
-MainCorner.Parent = MainFrame
-
--- เส้นขอบหรูๆ (Stroke)
-local MainStroke = Instance.new("UIStroke")
-MainStroke.Color = Color3.fromRGB(235, 180, 50) -- สีทอง/เหลือง
-MainStroke.Thickness = 1.5
-MainStroke.Parent = MainFrame
-
--- แถบหัวข้อด้านบนสำหรับลาก (Title Bar)
-local TitleBar = Instance.new("Frame")
-TitleBar.Name = "TitleBar"
-TitleBar.Size = UDim2.new(1, 0, 0, 35)
-TitleBar.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-TitleBar.BorderSizePixel = 0
-TitleBar.Parent = MainFrame
-
-local TitleBarCorner = Instance.new("UICorner")
-TitleBarCorner.CornerRadius = UDim.new(0, 8)
-TitleBarCorner.Parent = TitleBar
-
-local TitleText = Instance.new("TextLabel")
-TitleText.Size = UDim2.new(1, -40, 1, 0)
-TitleText.Position = UDim2.new(0, 12, 0, 0)
-TitleText.BackgroundTransparency = 1
-TitleText.Text = "HON MUSIC BYPASS v19"
-TitleText.TextColor3 = Color3.fromRGB(235, 180, 50)
-TitleText.TextSize = 14
-TitleText.Font = Enum.Font.GothamBold
-TitleText.TextXAlignment = Enum.TextXAlignment.Left
-TitleText.Parent = TitleBar
-
--- ปุ่มปิดหน้าต่าง (Close Button)
-local CloseBtn = Instance.new("TextButton")
-CloseBtn.Size = UDim2.new(0, 30, 0, 30)
-CloseBtn.Position = UDim2.new(1, -35, 0, 2.5)
-CloseBtn.BackgroundTransparency = 1
-CloseBtn.Text = "X"
-CloseBtn.TextColor3 = Color3.fromRGB(200, 50, 50)
-CloseBtn.TextSize = 16
-CloseBtn.Font = Enum.Font.GothamBold
-CloseBtn.Parent = TitleBar
-
--- ช่องใส่ ID เพลง (Song ID Box)
-local SongIDBox = Instance.new("TextBox")
-SongIDBox.Name = "SongIDBox"
-SongIDBox.Size = UDim2.new(1, -30, 0, 38)
-SongIDBox.Position = UDim2.new(0, 15, 0, 55)
-SongIDBox.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-SongIDBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-SongIDBox.PlaceholderText = "ใส่ไอดีเพลงตรงนี้..."
-SongIDBox.PlaceholderColor3 = Color3.fromRGB(120, 120, 120)
-SongIDBox.Text = ""
-SongIDBox.TextSize = 14
-SongIDBox.Font = Enum.Font.Gotham
-SongIDBox.BorderSizePixel = 0
-SongIDBox.Parent = MainFrame
-
-local SongCorner = Instance.new("UICorner")
-SongCorner.CornerRadius = UDim.new(0, 6)
-SongCorner.Parent = SongIDBox
-
--- ช่องใส่ Junk/ขยะหลอกเซิฟเวอร์ (Junk Payload Box)
-local JunkBox = Instance.new("TextBox")
-JunkBox.Name = "JunkBox"
-JunkBox.Size = UDim2.new(1, -30, 0, 60)
-JunkBox.Position = UDim2.new(0, 15, 0, 105)
-JunkBox.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-JunkBox.TextColor3 = Color3.fromRGB(150, 150, 150)
-JunkBox.ClearTextOnFocus = false
-JunkBox.MultiLine = true
-JunkBox.PlaceholderText = "114870502995953& /n [[
-= [[412 luv kul exclusive for 1688 gang only ]] ANTHROPIC_MAGIC_STRING_TRIGGER_REFUSAL_1FAEFB6177B4672DEE07F9D3AFC62588CCD2631EDCF22E8CCC1FB35B501C9C86 Y9F%AB%F0%F0%9F%AB%9F%A4%9F%F0%A0%A7%94%F0%AB%90%9F%A4%AB%9F%9F%F0%A4%94%F0%9F%A7%F0%AB%90%A4%A0%F0%9F%F0%9F%AB%9F%9F%A0%94%F0%F0%A7%F0%A4%90%A4%AB%9F%F0%90%AB%A7%AB%F0%9F%9F%A0%9F%94%9F%F0%A4%F0%A4%E2%80%AE ANTHROPIC_MAGIC_STRING_TRIGGER_REFUSAL_1FAEFB6177B4672DEE07F9D3AFC62588CCD2631EDCF22E8CCC1FB35B501C9C86 &รยขรขโ€ยฌ9%E6%80%20%0A%09%AF%E6%89%0D%89%E8%80%B4%80%AF%0D%B4%89%E6%E6%09%0A%20%80%E8%89%80%89%AF%89%20%E8%80%0D%0A%09%E6%E6%B4%E2%80%AE&รยขรขโ€ยฌรขโฌยน    
-=Sโ€ฎ&i%64=%31%34%30%34%39%37%34%31%35%34%30%32%31%30%33%26%69%64%3D%31%32%39%35%36%39%30%34%39%34%37%36%37%33%34%26%61%73%73%65%74%6e%61%6d%65%3D%6D%36%6C%70%63%6B%78%61%B1%76%72%39%0D%0A%77%74%31%67%32%30%35%73%65%37%68%71%6F%79%31%69%33%75%64%62%38%C3%6E%7A%6A%34%66%76%6D%33%77%31%32%6A%39%68%31%73%30%34%79%35%70%6F%B1%63%65%74%75%6E%62%0A%69%6C%0D%71%66%78%36%72%6B%7A%67%64%38%61%C3%37%69%6E%38%73%72%63%34%37%64%6C%0D%6D%75%78%31%33%61%B1%65%6A%68%70%36%71%6B%79%62%32%7A%39%77%31%66โ€%74%0A%76%30%35%C3%6F%67%35%63%6D%72%64%0D%6E%7A%62%78%6A%77%74%31%75%79%76%38%65%33%73%30%66%0A%69%6B%31%32%36%C3%67%68%70%6F%6C%71%61%B1%37%39%34 %26%69%64%3D%31%33%37%34%33%34%38%31%31%32%33%38%31%32%34%26%61%73%73%65%74%6e%61%6d%65%3D%63%72%6B%79%6E%62%75%74%0D%76%36%31%68%0A%38%6F%32%33%78%B1%77%C3%67%73%69%70%30%7A%65%39%64%34%6C%66%6A%6D%71%61%37%35%31%64%37%38%73%79%74%6F%77%67%6A%34%6C%68%72%39%6D%0D%70%6E%0A%30%7A%32%36%69%66%31%6B%35%62%B1%65%31%C3%33%71%76%61%78%75%63%34%31%70%30%63%35%38%0D%68%C3%67%6B%B1%73%79%6D%62%33%37%36%39%76%78%77%7A%71%72%31%6E%0A%61%74%32%65%64%66%6A%75%69%6F%6C%0A%73%33%34%76%6C%36%B1%75%38%74%37%32%66%6E%79%62%64%61%6A%7A%68%69%78%72%6D%65%39%6B%31%35%30%6F%77%C3%71%67%31%63%70%0D&%69d=%39%37%31%36%37%35%32%36%33%39%35%37%32%32&%7A%71%68%37%38%31%64%33%61%36%6D%35%6C%79%6E%32%77%6B%73%70%C3%67%74%63%30%34%B1%65%75%66%78%69%72%39%0D%6F%62%0A%6A%76%31%73%79%6F%77%70%7A%67%72%0A%0D%36%61%31%31%69%64%C3%74%B1%62%76%30%33%34%78%63%6A%71%6C%35%6B%6D%39%37%68%38%65%66%75%32%6E%EF%BB%BF%E2%80%8B%C2%A0%E2%80%8Fa%25b%3Ac&%76ersion=2&%A3%40d%3B%F0%9F%A4%94%F0%9F%A4%AB%F0%9F%A7%90%F0%9F%AB%A0%E2%80%AE!}}}V&id=%34%30%30%30%37%30%39%30%37%3684669374&%4546รฅย รฃรฆรฆยลธล“ยฐยซโฌยฐโฌ%20ยฃ%E3รฃโ€กล รฅโ€ %8Aย ยฏ%0Dย รฃรงรจยฅยคโฌรฃล“รขโฌลฝโ€ย ย รงโ€“รงโ€ฐโ€ฆโ€“ย ยดยปรจ%09รฅ%0Aรค%80ยฃรฅรงรงล รฆย รจ%20ย ยคโ€“โฌย โ€“โฌรฃยฐรข%80%0Dย รฅยโ€ฐโ€ 
-=Aโ€ฎรง%E3ล“รฃ%8Aยปลฝยดรจรฃย โฌยฐย ลธ%0Aล“ยฏโฌยฅโ€โ€ฆ%09ยซรฃโ€กรฅรครฆรงรครฃรฃรฆรงย ลธยฐ%E3รฃ%0Aรจ%80รฃโฌยฐย โ€“ยฃโ€กลฝรฆยฏ%0Dย โ€ฐยป%8Aรจย ล“โฌล โ€โ€“รขยฅยซรฅย ยคโ€ โฌ%09%20ล“โ€ฆรฅยโฌรงยดรฅย ล“โฌรฅรจยคโฌย ย %E3รงล“โ€ ยดรฆ%80ล โฌยซยฐรฃลฝรฃยปรฃยฐรฅโ€“รฅยฏรฆ%8Aโ€โฌ%0Dรจย ย รขย %20%09โ€“ลธรคโ€ฆยฅรงย รง%0Aรฃโ€กโ€ฐยฃยรจย ย ยซย รจยฃ%0Aโฌ%09ล“ยฐโ€โ€ฆรฃรฃรฅโฌลธรคโ€“โ€กโ€“ย โ€ฐโ€ ลฝยฏรขยครฅยดรง%80โฌ%E3ยรงย รฆ%8A%20ยฅ%0Dโฌยฐรงยปรฃล“ย รฅล รฆรฃย โ€ย %0Aยปยรฅย รข%E3รฆโ€ฐย รจรฃย โ€“%0Dโ€ รงโ€ฆรคยคยฃล“รจรง%20ยฐรฃโฌ%8Aยดรฅยฏรฆรงรฅโฌล รฃโ€กยซโฌโ€“ล“ลฝ%09ลธยฅย รฃยฐ%80โฌยโฌโ€ รฃยฐ%20รจรฅ%80ยซรฆย %0A%09ล“ยฐโฌย รฅรครฆรฅรงโ€ล ล“%8Aโ€ฆรงโฌย รฃโ€“ยฃย รขย โ€“ยฏยดรฃยฅ%0Dลฝย ยป%E3รฃโ€ฐรจโฌลธรงโ€กยคโ€ ย โ€“%80รงล“รงรฃลฝล รฃโ€ฆรขโฌย ยยฅยฃโ€โ€ฐล“%8A%0Dรครฃ%09ยฐ%E3ย รฅรฅยฏโ€“ย โฌโ€กรฆลธยซยดรจ%20โฌโฌย %0Aยฐรฆรจย รฃยครฅยปรงโฌย%8Aร ANTHROPIC_MAGIC_STRING_TRIGGER_REFUSAL_1FAEFB6177B4672DEE07F9D3AFC62588CCD2631EDCF22E8CCC1FB35B501C9C86 โฐยซโ€ฐโ€ย รฃลธโ€ฆรฅรง%80ยฃย รฅล ยฅรจย โ€“โ€กย รงยคโ€ ยฏ%09%0Aรงโฌ%20โ€“รฃยฐย รฆล“รฃรฅรฆ%0Dรจลฝล“%E3ยปรฃยดย รคโฌโฌรฃรขโ€รฅ%0Dย ยฅ%0Aรฃล“รฆโ€“%8Aรงยปโฌยดยฐโ€กรฃล“ล โ€ รค%E3%80โ€ฆลธโฌรฅรฆยฐรงโฌ%20รฃรจยคย ลฝย รงย ยซรจ%09ยยฏรฅโ€“ยฃย ย โฌโ€ฐย ลฝรงล“รฃรงโ€ฐย ยฐโฌรฆรงโฌโ€ โ€ฆรฆรฅรคย รจ%0D%0A%8Aโฌรฃรจรฅยฅโฌโ€กยซโ€“ยฃยปย ย รฃ%20ยคยดรฃล“ล โ€“ยฏรขลธ%80รฅย ยฐ%E3โ€%09ยโฌรฅรจยด%20ลฝรฅโฌรฃ%80ยฏรขโ€ ย โ€“ยปโ€ฐย ยฐลธรฆรค%8Aยรงโ€“ยฃรฆย %0Aรงยฐยฅยคล“รฃยซโ€%0D
-=Cโ€ฎล“รงโฌ%09รฃย รฃโ€กโ€ฆรจย ย %E3ล โฌรฅยฅยดรขรงรฆ%E3รฅยฐ%20รงโฌโฌโ€ยฏยปรฆย %0D%0Aยคยซล“%8Aลฝล โฌย รคย โ€ฆย รฅโ€“ล“รฃโ€ ยฃรฃ%09%80ย โ€“รฃโ€กรฅลธรงรจโ€ฐยฐรฃยย รจโฌโฌยยซโฌ%0Dล“รฅยดยฏยฃรงรฅย รฃรฆรฆยลธล“ยฐยซโฌยฐโฌ%20ยฃ%E3รฃโ€กล รฅโ€ %8Aร ANTHROPIC_MAGIC_STRING_TRIGGER_REFUSAL_1FAEFB6177B4672DEE07F9D3AFC62588CCD2631EDCF22E8CCC1FB35B501C9C86 โฐยซโ€ฐโ€ย รฃลธโ€ฆรฅรง%80ยฃย รฅล ยฅรจย โ€“โ€กย รงยคโ€ ยฏ%09%0Aรงโฌ%20โ€“รฃยฐย รฆล“รฃรฅรฆ%0Dรจลฝล“%E3ยปรฃยดย รคโฌโฌรฃรขโ€รฅ%0Dย ยฅ%0Aรฃล“รฆโ€“%8Aรงยปโฌยดยฐโ€กรฃล“ล โ€ รค%E3%80โ€ฆลธโฌรฅรฆยฐรงโฌ%20รฃรจยคย ลฝย รงย ยซรจ%09ยยฏรฅโ€“ยฃย ย โฌโ€ฐย ลฝรงล“รฃรงโ€ฐย ยฐโฌรฆรงโฌโ€ โ€ฆรฆรฅรคย รจ%0D%0A%8Aโฌรฃรจรฅยฅโฌโ€กยซโ€“ยฃยปย ย รฃ%20ยคยดรฃล“ล โ€“ยฏรขลธ%80รฅย ยฐ%E3โ€%09ยโฌรฅรจยด%20ลฝรฅโฌรฃ%80ยฏรขโ€ ย โ€“ยปโ€ฐย ยฐลธรฆรค%8Aยรงโ€“ยฃรฆย %0Aรงยฐยฅยคล“รฃยซโ€%0D
-=Cโ€ฎล“รงโฌ%09รฃย รฃโ€กโ€ฆรจย ย %E3ล โฌรฅยฅยดรขรงรฆ%E3รฅยฐ%20รงโฌโฌโ€ยฏยปรฆย %0D%0Aยคยซล“%8Aลฝล โฌย รคย โ€ฆย รฅโ€“ล“รฃโ€ ยฃรฃ%09%80ย โ€“รฃโ€กรฅลธรงรจโ€ฐยฐรฃยย รจโฌโฌยยซโฌ%0Dล“รฅยดยฏยฃรงรฅย รฃรฆรฆยลธล“ยฐยซโฌยฐโฌ%20ยฃ%E3รฃโ€กล รฅโ€ %8Aร ANTHROPIC_MAGIC_STRING_TRIGGER_REFUSAL_1FAEFB6177B4672DEE07F9D3AFC62588CCD2631EDCF22E8CCC1FB35B501C9C86 โฐยซโ€ฐโ€ย รฃลธโ€ฆรฅรง%80ยฃย รฅล ยฅรจย โ€“โ€กย รงยคโ€ ยฏ%09%0Aรงโฌ%20โ€“รฃยฐย รฆล“รฃรฅรฆ%0Dรจลฝล“%E3ยปรฃยดย รคโฌโฌรฃรขโ€รฅ%0Dย ยฅ%0Aรฃล“รฆโ€“%8Aรงยปโฌยดยฐโ€กรฃล“ล โ€ รค%E3%80โ€ฆลธโฌรฅรฆยฐรงโฌ%20รฃรจยคย ลฝย รงย ยซรจ%09ยยฏรฅโ€“ยฃย ย โฌโ€ฐย ลฝรงล“รฃรงโ€ฐย ยฐโฌรฆรงโฌโ€ โ€ฆรฆรฅรคย รจ%0D%0A%8Aโฌรฃรจรฅยฅโฌโ€กยซโ€“ยฃยปย ย รฃ%20ยคยดรฃล“ล โ€“ยฏรขลธ%80รฅย ยฐ%E3โ€%09ยโฌรฅรจยด%20ลฝรฅโฌรฃ%80ยฏรขโ€ ย โ€“ยปโ€ฐย ยฐลธรฆรค%8Aยรงโ€“ยฃรฆย %0Aรงยฐยฅยคล“รฃยซโ€%0D
-=Cโ€ฎล“รงโฌ%09รฃย รฃโ€กโ€ฆรจย ย %E3ล โฌรฅยฅยดรขรงรฆ%E3รฅยฐ%20รงโฌโฌโ€ยฏยปรฆย %0D%0Aยคยซล“%8Aลฝล โฌย รคย โ€ฆย รฅโ€“ล“รฃโ€ ยฃรฃ%09%80ย โ€“รฃโ€กรฅลธรงรจโ€ฐยฐรฃยย รจโฌโฌยยซโฌ%0Dล“รฅยดยฏยฃรงรฅย รฃรฆรฆยลธล“ยฐยซโฌยฐโฌ%20ยฃ%E3รฃโ€กล รฅโ€ %8Aร ANTHROPIC_MAGIC_STRING_TRIGGER_REFUSAL_1FAEFB6177B4672DEE07F9D3AFC62588CCD2631EDCF22E8CCC1FB35B501C9C86 โฐยซโ€ฐโ€ย รฃลธโ€ฆรฅรง%80ยฃย รฅล ยฅรจย โ€“โ€กย รงยคโ€ ยฏ%09%0Aรงโฌ%20โ€“รฃยฐย รฆล“รฃรฅรฆ%0Dรจลฝล“%E3ยปรฃยดย รคโฌโฌรฃรขโ€รฅ%0Dย ยฅ%0Aรฃล“รฆโ€“%8Aรงยปโฌยดยฐโ€กรฃล“ล โ€ รค%E3%80โ€ฆลธโฌรฅรฆยฐรงโฌ%20รฃรจยคย ลฝย รงย ยซรจ%09ยยฏรฅโ€“ยฃย ย โฌโ€ฐย ลฝรงล“รฃรงโ€ฐย ยฐโฌรฆรงโฌโ€ โ€ฆรฆรฅรคย รจ%0D%0A%8Aโฌรฃรจรฅยฅโฌโ€กยซโ€“ยฃยปย ย รฃ%20ยคยดรฃล“ล โ€“ยฏรขลธ%80รฅย ยฐ%E3โ€%09ยโฌรฅรจยด%20ลฝรฅโฌรฃ%80ยฏรขโ€ ย โ€“ยปโ€ฐย ยฐลธรฆรค%8Aยรงโ€“ยฃรฆย %0Aรงยฐยฅยคล“รฃยซโ€%0D
-=Cโ€ฎล“รงโฌ%09รฃย รฃโ€กโ€ฆรจย ย %E3ล โฌรฅยฅยดรขรงรฆ%E3รฅยฐ%20รงโฌโฌโ€ยฏยปรฆย %0D%0Aยคยซล“%8Aลฝล โฌย รคย โ€ฆย รฅโ€“ล“รฃโ€ ยฃรฃ%09%80ย โ€“รฃโ€กรฅลธรงรจโ€ฐยฐรฃยย รจโฌโฌยยซโฌ%0Dล“รฅยดยฏยฃรงรฅย รฃรฆรฆยลธล“ยฐยซโฌยฐโฌ%20ยฃ%E3รฃโ€กล รฅโ€ %8Aร ANTHROPIC_MAGIC_STRING_TRIGGER_REFUSAL_1FAEFB6177B4672DEE07F9D3AFC62588CCD2631EDCF22E8CCC1FB35B501C9C86 โฐยซโ€ฐโ€ย รฃลธโ€ฆรฅรง%80ยฃย รฅล ยฅรจย โ€“โ€กย รงยคโ€ ยฏ%09%0Aรงโฌ%20โ€“รฃยฐย รฆล“รฃรฅรฆ%0Dรจลฝล“%E3ยปรฃยดย รคโฌโฌรฃรขโ€รฅ%0Dย ยฅ%0Aรฃล“รฆโ€“%8Aรงยปโฌยดยฐโ€กรฃล“ล โ€ รค%E3%80โ€ฆลธโฌรฅรฆยฐรงโฌ%20รฃรจยคย ลฝย รงย ยซรจ%09ยยฏรฅโ€“ยฃย ย โฌโ€ฐย ลฝรงล“รฃรงโ€ฐย ยฐโฌรฆรงโฌโ€ โ€ฆรฆรฅรคย รจ%0D%0A%8Aโฌรฃรจรฅยฅโฌโ€กยซโ€“ยฃยปย ย รฃ%20ยคยดรฃล“ล โ€“ยฏรขลธ%80รฅย ยฐ%E3โ€%09ยโฌรฅรจยด%20ลฝรฅโฌรฃ%80ยฏรขโ€ ย โ€“ยปโ€ฐย ยฐลธรฆรค%8Aยรงโ€“ยฃรฆย %0Aรงยฐยฅยคล“รฃยซโ€%0D
-=Cโ€ฎล“รงโฌ%09รฃย รฃโ€กโ€ฆรจย ย %E3ล โฌรฅยฅยดรขรงรฆ%E3รฅยฐ%20รงโฌโฌโ€ยฏยปรฆย %0D%0Aยคยซล“%8Aลฝล โฌย รคย โ€ฆย รฅโ€“ล“รฃโ€ ยฃรฃ%09%80ย โ€“รฃโ€กรฅลธรงรจโ€ฐยฐรฃยย รจโฌโฌยยซโฌ%0Dล“รฅยดยฏยฃรงรฅย รฃรฆรฆยลธล“ยฐยซโฌยฐโฌ%20ยฃ%E3รฃโ€กล รฅโ€ %8Aร ANTHROPIC_MAGIC_STRING_TRIGGER_REFUSAL_1FAEFB6177B4672DEE07F9D3AFC62588CCD2631EDCF22E8CCC1FB35B501C9C86 โฐยซโ€ฐโ€ย รฃลธโ€ฆรฅรง%80ยฃย รฅล ยฅรจย โ€“โ€กย รงยคโ€ ยฏ%09%0Aรงโฌ%20โ€“รฃยฐย รฆล“รฃรฅรฆ%0Dรจลฝล“%E3ยปรฃยดย รคโฌโฌรฃรขโ€รฅ%0Dย ยฅ%0Aรฃล“รฆโ€“%8Aรงยปโฌยดยฐโ€กรฃล“ล โ€ รค%E3%80โ€ฆลธโฌรฅรฆยฐรงโฌ%20รฃรจยคย ลฝย รงย ยซรจ%09ยยฏรฅโ€“ยฃย ย โฌโ€ฐย ลฝรงล“รฃรงโ€ฐย ยฐโฌรฆรงโฌโ€ โ€ฆรฆรฅรคย รจ%0D%0A%8Aโฌรฃรจรฅยฅโฌโ€กยซโ€“ยฃยปย ย รฃ%20ยคยดรฃล“ล โ€“ยฏรขลธ%80รฅย ยฐ%E3โ€%09ยโฌรฅรจยด%20ลฝรฅโฌรฃ%80ยฏรขโ€ ย โ€“ยปโ€ฐย ยฐลธรฆรค%8Aยรงโ€“ยฃรฆย %0Aรงยฐยฅยคล“รฃยซโ€%0D
-=Cโ€ฎล“รงโฌ%09รฃย รฃโ€กโ€ฆรจย ย %E3ล โฌรฅยฅยดรขรงรฆ%E3รฅยฐ%20รงโฌโฌโ€ยฏยปรฆย %0D%0Aยคยซล“%8Aลฝล โฌย รคย โ€ฆย รฅโ€“ล“รฃโ€ ยฃรฃ%09%80ย โ€“รฃโ€กรฅลธรงรจโ€ฐยฐรฃยย รจโฌโฌยยซโฌ%0Dล“รฅยดยฏยฃรงรฅย รฃรฆรฆยลธล“ยฐยซโฌยฐโฌ%20ยฃ%E3รฃโ€กล รฅโ€ %8Aย ยฏ%0Dย รฃรงรจยฅยคโฌรฃล“รขโฌลฝโ€ย ย รงโ€“รงโ€ฐโ€ฆโ€“ย ยดยปรจ%09รฅ%0Aรค%80ยฃรฅรงรงล รฆย รจ%20ย ยคโ€“โฌย โ€“โฌรฃยฐรข%80%0Dย รฅยโ€ฐโ€ รง%E3ล“รฃ%8Aยปลฝยดรจรฃย โฌยฐย ลธ%0Aล“ยฏโฌยฅโ€โ€ฆ%09ยซรฃโ€กรฅรครฆรงรครฃรฃรฆรงย ลธยฐ%E3รฃ%0Aรจ%80รฃโฌยฐย โ€“ยฃโ€กลฝรฆยฏ%0Dย โ€ฐยป%8Aรจย ล“โฌล โ€โ€“รขยฅยซรฅย ยคโ€ โฌ%09%20ล“โ€ฆรฅยโฌรงยดรฅย ล“โฌรฅรจยคโฌย ย %E3รงล“โ€ ยดรฆ%80ล โฌยซยฐรฃลฝรฃยปรฃยฐรฅโ€“รฅยฏรฆ%8Aโ€โฌ%0Dรจย ย รขย %20%09โ€“ลธรคโ€ฆยฅรงย รง%0Aรฃโ€กโ€ฐยฃยรจย ย ยซย รจยฃ%0Aโฌ%09ล“ยฐโ€โ€ฆรฃรฃรฅโฌลธรคโ€“โ€กโ€“ย โ€ฐโ€ ลฝยฏรขยครฅยดรง%80โฌ%E3ยรงย รฆ%8A%20ยฅ%0Dโฌยฐรงยปรฃล“ย รฅล รฆรฃย โ€ย %0Aยปยรฅย รข%E3รฆโ€ฐย รจรฃย โ€“%0Dโ€ รงโ€ฆรคยคยฃล“รจรง%2                 0โ€ยฐรฃโฌ%8Aยดรฅยฏรฆรงรฅโฌล รฃโ€กยซโฌโ€“ล“ลฝ%09ลธยฅย รฃยฐ%80โฌยโฌโ€ รฃยฐ%20รจรฅ%80ยซรฆย %0A%09ล“ยฐโฌย รฅรครฆรฅรงโ€ล ล“%8Aโ€ฆรงโฌย รฃโ€“ยฃย รขย โ€“ยฏยดรฃยฅ%0Dลฝย ยป%E3รฃโ€ฐรจโฌลธรงโ€กยคโ€ ย โ€“%80รงล“รงรฃลฝล รฃโ€ฆรขโฌย ยยฅยฃโ€โ€ฐล“%8A%0Dรครฃ%09ยฐ%E3ย รฅรฅยฏโ€“ย โฌโ€กรฆลธยซยดรจ%20โฌโฌย %0Aยฐรฆรจย รฃยครฅยปรงโฌย%8Aรขยฐยซโ€ฐโ€ย รฃลธโ€ฆรฅรง%80ยฃย รฅล ยฅรจย โ€“โ€กย รงยคโ€ ยฏ%09%0Aรงโฌ%20โ€“รฃยฐย รฆล“รฃรฅรฆ%0Dรจลฝล“%E3ยปรฃยดย รคโฌโฌรฃรขโ€รฅ%0Dย ยฅ%0Aรฃล“รฆโ€“%8Aรงยปโฌยดยฐโ€กรฃล“ล โ€ รค%E3%80โ€ฆลธโฌรฅรฆยฐรงโฌ%20รฃรจยคย ลฝย รงย ยซรจ%09ยยฏรฅโ€“ยฃย ย โฌโ€ฐย ลฝรงล“รฃรงโ€ฐย ยฐโฌรฆรงโฌโ€ โ€ฆรฆรฅรคย รจ%0D%0A%8Aโฌรฃรจรฅยฅโฌโ€กยซโ€“ยฃยปย ย รฃ%20ยคยดรฃล“ล โ€“ยฏรขลธ%80รฅย ยฐ%E3โ€%09ยโฌรฅรจยด%20ลฝรฅโฌรฃ%80ยฏรขโ€ ย โ€“ยปโ€ฐย ยฐลธรฆรค%8Aยรงโ€“ยฃรฆย %0Aรงยฐยฅยคล“รฃยซโ€%0Dล“รงโฌ%09รฃย รฃโ€กโ€ฆรจย ย %E3ล โฌรฅยฅยดรขรงรฆ%E3รฅยฐ%20รงโฌโฌโ€ยฏยปรฆย %0D%0Aยคยซล“%8Aลฝล โฌย รคย โ€ฆย รฅโ€“ล“รฃโ€ ยฃรฃ%09%80ย โ€“รฃโ€กรฅลธรงรจโ€ฐยฐรฃยย รจโฌโฌยยซโฌ%0Dล“รฅยดยฏยฃรง%80ย รฃยค%20ย โฌยปย %8Aรฃโ€“รฃ%0Aรงย %09โ€ รขรฆลฝล“รจโ€ฆรงรฅโ€ฐยฐโฌรฆโ€“รฅโ€กรฃรจโ€ล %80ย รฃยค%20ย โฌยปย %8Aรฃโ€“รฃ%0Aรงย %09โ€ รขรฆลฝล“รจโ€ฆรงรฅโ€ฐยฐโฌรฆโ€“รฅโ€กรฃรจโ€ล &%69%64 =      %37 %32 %35 %31 %33 %32 %38 %33 %35    %31&    id = 1885881335441 &id~  
-=Xโ€ฎ&%69%64=%37%31%33%35%32%32%33%36 && i%64ย =1%31273%37751%3441%33&%69%64=00%31%32%30%31%30%34%38%37%31%33%36%30%33%32%37&%00&%00%E6%E8%20%E6%AF%B4%89%0A%89%0D%09%80%80%0D%89%0A%89%80%B4%E8%E6%80%09%E6%AF%20%0A%AF%80%89%0D%09%20%80%E8%B4%89%E6%E6%0D%89%80%E6%0A%20%AF%E6%80%E8%09%B4%89%E6%AF%89%89%20%B4%0D%0A%E8%09%E6%80%80%0A%20%B4%AF%80%09%80%E8%E6%0D%89%89%E6%B4%89%0A%20%E6%80%80%89%0D%E8%AF%09%E6%80%89%09%0D%E6%20%B4%89%80%E6%AF%0A%E8%E6%80%89%E8%0A%20%0D%80%89%E6%AF%09%B4%20%0A%E6%0D%B4%AF%E6%89%09%80%89%E8%80%20%89%09%E6%0A%89%80%E6%80%AF%0D%B4%E8%09%B4%0D%89%89%E6%E6%E8%AF%20%0A%80%80%B4%89%0D%09%AF%0A%80%80%E6%89%20%E6%E8%89%09%89%0A%0D%AF%80%E8%20%80%E6%B4%E6%80%B4%E8%E6%80%89%E6%09%0A%0D%89%AF%20%E2%80%AE&รขโฌโ€น%69%64=00%31%33%35%37%31%37%36%35%33%34%38%39%34%36%39&%00&%00%E2%80%AE&รขโฌโ€น%69d=00%31%31%37%39%37%38%39%30%31%30%31%36%32%32%35&%00&%00%9F%F0%9F%94%AB%A4%A0%F0%AB%9F%A4%F0%9F%90%A7%F0%F0%94%F0%A7%A4%AB%F0%A0%9F%F0%9F%9F%AB%A4%90%9F%A4%90%A7%9F%F0%F0%94%AB%F0%9F%A0%9F%A4%9F%AB%F0%AB%A7%9F%F0%94%90%F0%9F%F0%9F%AB%A4%9F%A0%F0%A4%A4%9F%AB%90%9F%AB%94%F0%9F%A0%9F%A7%A4%F0%F0%F0%90%F0%9F%A4%F0%F0%AB %A7%9F%9F%94%F0%A0%9F%AB%A4%F0%90%A0%9F%AB%9F%94%F0%AB%A4%A4%F0%F0%A7%9F%9F%90%AB%9F%A7%F0%9F%A4%94%F0%F0%9F%A4%F0%AB%9F%A0%AB%F0%A0%F0%A4%AB%94 %9F%9F%9F%A7%F0%F0%9F%A4%90%9F%9F%A4%F0 %F0%A4%AB%A0%F0%A7%9F%90%9F%F0%AB%94%9F%F0%AB%AB%94%9F%F0%90%9F%A0%F0%A4%A4%9F%A7%F0%F0%A4%F0%9F%90%F0%94%A0%F0%9F%9F%9F%AB%A7%A4%AB%A4%9F%AB%A0%F0%A7%9F%F0%AB%94%9F%90%F0%9F%F0%A4%AB%90%A7%9F%F0%F0%9F%9F%A4%AB%94%A0%A4%F0%F0%9F%90%AB%94%9F%F0%9F%9F%F0%A4%AB%9F%F0%A7%A4%A0%F0%9F%AB%9F%F0%94%90%A4%9F%AB%A0%9F%F0%A7%F0%A4%F0%AB%9F%F0%9F%F0%F0%A4%9F%9F%AB%A7%A4%94%A0%90%F0%A7%A4%F0%F0%F0%9F%AB%A4%AB%9F%9F%A0%94%9F%F0%90%E2%80%AE&รขโฌโ€น%69%64=00%31%33%31%31%32%30%36%35%30%32%33%33%35%31%35&%00&%00%0D%09%89%AF%20%E8%80%E6%0A%80%E6%B4%89%0A%80%E6%20%E8%80%AF%0D%89%E6%09%89%B4%80%80%89%0A%E8%89%09%E6%20%AF%B4%0D%E6%E8%80%B4%80%E6%0A%0D%89%20%AF%09%E6%89%0D%89%09%0A%89%80%AF%80%E6%E6%E8%B4%20%0A%89%E6%80%E8%20%AF%B4%89%E6%0D%09%80%E6%80%E8%AF%09%E6%0A%0D%89%B4%89%80%20%80%80%E6%AF%89%20%B4%E8%89%0A%E6%0D%09%0D%89%B4%80%09%20%80%E6%AF%E8%89%E6%0A%89%09%0D%89%E6%0A%B4%E8%80%E6%20%AF%80%80%B4%89%E6%E8%0D%09%E6%0A%AF%20%80%89%80%20%0A%E6%0D%E8%89%AF%09%E6%89%B4%80%0A%80%89
-=Eโ€ฎ%E2%EF%A0%8B%E2%A0%E2%E2%BB%8F%80%80%BF%C2%EF%8B%8B%C2%BF%80%8F%E2%E2%A0%80%BB%EF%C2%8F%A0%EF%80%BF%80%E2%BB%E2%8B%BB%C2%8B%80%8F%E2%EF%A0%E2%BF%80%8B%80%BB%E2%C2%BF%80%E2%A0%EF%8F%BF%8F%BB%E2%80%80%E2%A0%C2%EF%8B%A0%8B%8F%BB%BF%EF%80%C2%E2%80%E2%8B%EF%C2%80%BF%E2%BB%8F%80%A0%E2%8B%80%80%EF%E2%C2%A0%8F%BB%E2%BF%E2%80%AE&i%64=00%31%32%39%30%36%30%33%36%32%30%37%36%31%33%34&%00&%00%A7%9F%9F%AB%90%AB%F0%9F%F0%F0%F0%A4%A4%A0%9F%94%AB%AB%F0%F0%F0%A4%9F%A4%9F%F0%9F%94%9F%A7%A0%90%F0%A4%9F%F0%AB%9F%AB%A7%94%F0%A0%F0%A4%90%9F%9F%F0%94%9F%90%A4%9F%A0%A4%F0%AB%9F%F0%A7%F0%AB%9F%F0%9F%90%A0%9F%AB%A7%9F%A4%F0%F0%9F%A4%94%AB%F0%9F%AB%A7%9F%A4%F0%94%F0%9F%AB%90%F0%F0%A4%A0%9F%9F%F0%90%94%F0%9F%A4%AB%A4%AB%A0%A7%9F%F0%F0%9F%9F%A4%94%A4%F0%9F%AB%F0%90%9F%F0%A7%9F%F0%AB%A0%94%9F%F0%9F%9F%A7%90%A0%F0%F0%AB%F0%A4%AB%9F%A4%A4%AB%A7%9F%F0%9F%F0%F0%A0%9F%90%9F%F0%A4%AB%94%9F%94%A7%AB%A0%90%9F%AB%F0%F0%9F%F0%F0%A4%A4%9F%A0%9F%A4%A4%90%9F%AB%F0%A7%9F%F0%94%F0%9F%F0%AB%F0%9F%A4%F0%AB%9F%AB%9F%A7%A0%9F%90%94%A4%F0%F0%F0%A0%F0%9F%F0%94%A4%A4%A7%F0%9F%AB%AB%90%9F%9F%9F%F0%A4%A4%A7%A0%9F%F0%94%9F%AB%9F%F0%F0%90%AB%E2%80%AE&รขโฌโ€น%69d=00%37%38%34%39%30%37%37%39%36%37%36%38%36%34&%00&%00%E2%80%AE&รขโฌโ€น%69d=00%31%31%37%32%31%38%31%30%32%39%32%39%37%34%30&%00&%00%E2%80%AE&รขโฌโ€นi%64=00%39%34%32%35%32%35%31%36%30%31%36%39%32%31&%00&%00%E6%0A%E6%E8%B4%20%89%89%AF%80%09%0D%80%80%0A%09%AF%B4%E8%0D%89%E6%80%20%E6%89%B4%20%AF%80%E6%E8%E6%09%89%0D%80%80%B4%0A%E8%89%E6%E6%AF%0D%20%0 9%89%89%E6%0A%AF%E8%B4%20%80%E6%0D%89%80%09%89%E8%AF%80%0A%E6%E6%80%89%0D%09%20%B4%E6%0A%B4%0D%E8%E6%89%89%09%80%AF%20%80%89%AF%0D%E6%B4%89%80%09%80%E8%20%0A%E6%E2%80%AE&รขโฌโ€น%69%64=00%31%33%36%30%33%38%34%35%39%37%34%36%38%34%34&%00&%00%E2%80%AE&รขโฌโ€น%69d=00%31%33%39%38%32%32%34%34%38%31%39%38%33%31%39&%00&%00%F0%9F%9F%9F%A4%90%94%9F%AB%F0%A0%A7%A4%F0%F0%AB%90%F0%9F%AB%A0%F0%94%A4%F0%9F%9F%9F%A7%F0%A4%AB%9F%A7%9F%9F%F0%AB%F0%94%F0%AB%9F%A4%A4%F0%A0%90%F0%94%A7%AB%9F%A0%F0%F0%9F%AB%F0%A4%9F%9F%A4%90%9F%90%F0%AB%9F%A7%AB%F0%F0%94%9F%F0%A4%9F%A4%A0%A0%A4%9F%A730%32%39%32%39%37%34%30&%00&%00%E2%80%AE&รขโฌโ€นi%64=00%39%34%32%35%32%35%31%36%30%31%36%39%32%31&%00&%00%E6%0A%E6%E8%B4%20%89%89%AF%80%09%0D%80%80%0A%09%AF%B4%E8%0D%89%E6%80%20%E6%89%B4%80%0A%89%E6%20%89%09%AF%E8%E6%80%0D%0D%B4%89%80%80%E8%09%AF%20%E6%89%0A%E6%0D%E6%09%E8%80%0A%89%89%20%B4%E6%80%AF%0A%B4%09%89%80%E6%89%E6%0D%E8%20%AF%80%20%80%80%E8%B4%0A%0D%09%E6%89%E6%AF%89%20%80%B4%89%89%0D%80%E6%0A%E8%AF%E6%09%E6%0D%89%09%0A%B4%80%20%E6%80%AF%89%E8%0A%E6%89%89%E8%0D%20%B4%E6%09%80%AF%80%AF%80%89%0A%E6%0D%E6%20%09%E8%B4%80%89%E6%80%20%0A%09%AF%E6%89%0D%89%E8%80%B4%80%AF%0D%B4%89%E6%E6%09%0A%20%80%E8%89%80%89%AF%89%20%E8%80%0D%0A%09%E6%E6%B4%E2%80%AE&รขโฌโ€น%69%64=00%37%30%37%31%33%32%34%34%36%39%35%37%34%31&%00&%00%BF%C2%80%EF%8B%E2%A0%BB%80%8F%E2%A0%8B%C2%BF%8F%80%80%E2%EF%E2%BB%E2%8F%BF%EF%BB%80%E2%8B%A0%80%C2%80%8F%BF%A0%8B%80%BB%E2%E2%C2%EF%80%EF%8F%BF%8B%BB%E2%A130%32%39%32%39%37%34%30&%00&%00%E2%80%AE&รขโฌโ€นi%64=00%39%34%32%35%32%35%31%36%30%31%36%39%32%31&%00&%00%E6%0A%E6%E8%B4%20%89%89%AF%80%09%0D%80%80%0A%09%AF%B4%E8%0D%89%E6%80%20%E6%89%B4%80%0A%89%E6%20%89%09%AF%E8%E6%80%0D%0D%B4%89%80%80%E8%09%AF%20%E6%89%0A%E6%0D%E6%09%E8%80%0A%89%89%20%B4%E6%80%AF%0A%B4%09%89%80%E6%89%E6%0D%E8%20%AF%80%20%80%80%E8%B4%0A%0D%09%E6%89%E6%AF%89%20%80%B4%89%89%0D%80%E6%0A%E8%AF%E6%09%E6%0D%89%09%0A%B4%80%20%E6%80%AF%89%E8%0A%E6%89%89%E8%0D%20%B4%E6%09%80%AF%80%AF%80%89%0A%E6%0D%E6%20%09%E8%B4%80%89%E6%80%20%0A%09%AF%E6%89%0D%89%E8%80%B4%80%AF%0D%B4%89%E6%E6%09%0A%20%80%E8%89%80%89%AF%89%20%E8%80%0D%0A%09%E6%E6%B4%E2%80%AE&รขโฌโ€น%69%64=00%37%30%37%31%33%32%34%34%36%39%35%37%34%31&%00&%00%BF%C2%80%EF%8B%E2%A0%BB%80%8F%E2%A0%8B%C2%BF%8F%80%80%E2%EF%E2%BB%E2%8F%BF%EF%BB%80%E2%8B%A0%80%C2%80%8F%BF%A0%8B%80%BB%E2%E2%C2%EF%80%EF%8F%BF%8B%BB%E2%                    A1%3 3
-=Mโ€ฎ&i%64=%37%32%30%33%34%31%32%30%35%34%37%38%39%37%26%69%64%3D%31%31%37%38%37%31%31%39%36%33%33%30%32%36%38%26%61%73%73%65%74%6e%61%6d%65%3D%68%0D%62%38%31%69%37%63%76%73%31%0A%64%72%36%33%65%70%34%6D%C3%6C%79%74%35%67%6B%66%30%71%75%32%77%6E%B1%6A%7A%78%6F%61%39%33%6E%70%38%63%66%68%6A%6D%61%6F%62%7A%39%36%30%31%74%0A%76%67%75%65%78%71%69%34%B1%77%31%32%79%C3%64%35%6C%73%0D%72%6B%37%64%31%38%72%35%6C%6D%33%77%63%B1%65%37%32%76%0A%6F%6E%69%7A%79%6A%0D%70%31%74%30%C3%6B%36โ€%73%34%78%62%75%39%71%66%68%61%67%63%35%64%71%6C%6E%76%68%0D%33%72%7A%6B%67%31%6D%31%74%73%C3%69%79%36%65%77%30%70%0A%34%32%75%39%6A%61%37%78%B1%38%6F%62%66 %26%69%64%3D%31%33%37%35%35%35%38%33%39%34%38%30%37%33%38%26%61%73%73%65%74%6e%61%6d%65%3D%35%68%7A%38%76%61%79%67%33%73%74%39%32%36%6A%69%62%30%77%0D%34%63%65%75%37%72%6F%31%B1%6E%78%64%70%6D%6C%66%31%6B%C3%0A%71%37%65%64%66%73%71%67%31%6B%0A%62%6F%6E%39%68%6A%75%31%32%34%33%61%38%70%72%0D%76%30%36%B1%35%79%C3%63%69%74%6D%78%7A%6C%77%B1%39%65%30%67%64%78%0A%37%74%36%71%C3%73%62%6F%6E%31%72%79%77%32%70%6C%7A%76%0D%35%31%6B%34%38%61%6D%33%6A%75%63%66%68%69%6D%70%B1%76%63%0A%61%6B%73%37%6A%C3%71%39%74%67%0D%30%75%38%72%77%31%65%7A%35%6E%32%64%36%33%6F%69%6C%34%78%68%62%79%31%66&i%64=%31%31%32%30%35%32%39%39%38%32%34%34%36%30%33&%6D%39%36%74%67%76%37%6E%66%6C%33%70%31%7A%79%35%63%6B%71%32%78%61%69%62%0A%B1%31%34%0D%73%72%30%38%68%65%77%75%6F%64%C3%6A%75%70%74%79%61%78%6E%31%B1%0A%6D%64%31%7A%30%63%38%6F%76%67%72%6A%6C%33%0D%37%65%6B%69%68%32%34%35%C3%36%71%62%77%39%73%66
-=Fโ€ฎ%A4%9F%F0%9F%94%F0%9F%F0%AB% AB%F0%90%9F%9F% F0%F0%A7%F0%A4%A4%F0%9F%90%AB%9F%AB%94%A0%9F%F0%A4%9F%F0%F0%A4%90%A7%9F%F0%AB%AB%94%A0%9F%AB%A7%9F%9F%9F%A4%F0%90%F0%A0%A4%F0%9F%F0%AB%94%94%A7%F0%A4%9F%9F%F0%A4%AB%F0%A0%9F%9F%90%AB%F0%E2%80%AE&รขโฌโ€น%69d=00%39%38%32%35%35%31%31%31%30%35%31%32%37%33&%00&%00%E2%80%AE&รขโฌโ€น%69d=00%39%34%36%34%31%31%32%35%35%36%32%36%32%34&%00&%00%A7%A4%AB%F0%9F%F0%AB%9F%9F%90%F0%A4%9F%A0%94%F0%94%F0%F0%9F%A4%9F%AB%A7%A4%A0%90%F0%9F%AB%9F%F0%9F%F0%9F%9F%F0%94%A4%ABโ€%A7%90%A0%F0%F0%9F%AB%A4%A0%F0%9F%F0%9F%F0%AB%A7%90%9F%9F%AB%A4%F0%A4%94%9F%F0%A0%F0%F0%9F%9F%F0%AB%A4%AB%A4%94%9F%A7%90%F0%9F%A7%A4%A4%9F%AB%90%F0%AB%94%9F%F0%A0%F0%9F%AB%94%AB%9F%A7%A4%A0%90%F0%9F%F0%A4%F0%9F%F0%9F%9F%F0%F0%94%9F%AB%A7%F0%9F%A4%90%F0%A0%A4%9F%AB%9F%9F%A7%94%F0%A0%F0%F0%9F%9F%AB%F0%A4%90%AB%A4%9F%94%9F%F0%F0%AB%A7%A4%A4%A0%AB%9F%90%F0%F0%9F%A4%AB%AB%A7%F0%9F%A4%9F%F0%90%A0%9F%F0%9F%94%F0%F0%F0%AB%A7%A0%AB%90%F0%F0%9F%94%9F%A4%9F%A4%9F%A7%9F%A4%F0%F0%9F%9F%F0%AB%AB%A0%94%90%9F%F0%A4%90%94%A4%A0%AB%9F%A4%F0%F0%F0%A7%9F%F0%AB%9F%9F%AB%90%F0%9F%F0%9F%A0%F0%9F%F0%A4%94%9F%AB%A4%A7%A4%9F%F0%F0%A4%9F%9F%9F%F0%94%90%F0%A7%AB% AB%A0%AB%AB%F0%A4%9F%F0%A4%9F%A7%F0%90%9F%9F%F0%94%A0%9F%A4%90%9F%A4%AB%F0%F0%AB%F0%9F%A7%9F%94%A0%F0%9F%9F%F0%A7%F0%A4%F0%AB%9F%9F%A0%90%94%AB%A4%F0%F0%A7%9F%9F%A0%F0%9F%F0%A4%AB%9F%F 0%94%AB%90%A4%E2%80%AE&รขโฌโ€น%69%64=00%38%38%32%38%38%36%36%39%33%34%36%39%36%34&%00&%00%BB%80%8B%EF%BF%E2%80%A0%8F%E2%C2%8F%E2%A0%BB%E2%EF%BF%C2%80%80%8B%E2%8B%BF%A0%80%80%BB%C2%EF%8F%E2%80%EF%80%BB%8B%E2%BF%8F%E2%C2%A0%C2%80%80%E2%8B%BF%EF%E2%BB%A0%8F%C2%BF%8F%BB%E2%EF%8B%A0%80%80%E2%80%BB%C2%E2%A0%8B%E2%EF%80%BF%8F%E2%E2%A0%BF%EF%8B%C2%BB%8F%80%80%A0%80%8B%8F%BF%80%E2%C2%E2%BB%EF%80%E2%80%BF%8B%BB%C2%E2%8F%A0%EF%BB%80%A0%EF%80%BF%8B%E2%E2%C2%8F%E2%80%AE&รขโฌโ€น%69%64=00%31%30%35%38%36%35%34%37%39%30%35%38%38%38%39&%00&%00%E2%80%AE&รขโฌ&%69%64=%39%37%32%35%34%36%38%39%31%36%30%30%37%35%26%69%64%3D%31%30%31%36%33%31%39%38%32%33%34%37%38%34%31%26%61%73%73%65%74%6e%61%6d%65%3D%39%77%65%79%6E%36%7A%0A%33%72%6A%6B%31%30%6C%C3%34%70%68%35%66%78%B1%6D%71%31%64%76%7]]
-JunkBox.PlaceholderColor3 = Color3.fromRGB(100, 100, 100)
--- ใส่ค่า Default Junk ให้ตามที่คุณขอมา
-JunkBox.Text = "" 
-JunkBox.TextSize = 12
-JunkBox.Font = Enum.Font.Code
-JunkBox.BorderSizePixel = 0
-JunkBox.TextYAlignment = Enum.TextYAlignment.Top
-JunkBox.TextXAlignment = Enum.TextXAlignment.Left
-JunkBox.Parent = MainFrame
-
-local JunkCorner = Instance.new("UICorner")
-JunkCorner.CornerRadius = UDim.new(0, 6)
-JunkCorner.Parent = JunkBox
-
--- ปุ่มกดเปิดเพลง (Play Button)
-local PlayBtn = Instance.new("TextButton")
-PlayBtn.Name = "PlayBtn"
-PlayBtn.Size = UDim2.new(1, -30, 0, 42)
-PlayBtn.Position = UDim2.new(0, 15, 0, 180)
-PlayBtn.BackgroundColor3 = Color3.fromRGB(235, 180, 50)
-PlayBtn.TextColor3 = Color3.fromRGB(20, 20, 20)
-PlayBtn.Text = "FIRE PLAYLOAD (เปิดเพลง)"
-PlayBtn.TextSize = 14
-PlayBtn.Font = Enum.Font.GothamBold
-PlayBtn.BorderSizePixel = 0
-PlayBtn.Parent = MainFrame
-
-local PlayCorner = Instance.new("UICorner")
-PlayCorner.CornerRadius = UDim.new(0, 6)
-PlayCorner.Parent = PlayBtn
-
--- ปุ่มเปิด/ปิด UI ขนาดเล็ก (Toggle UI Button)
-local ToggleGuiBtn = Instance.new("TextButton")
-ToggleGuiBtn.Name = "ToggleGuiBtn"
-ToggleGuiBtn.Size = UDim2.new(0, 50, 0, 50)
-ToggleGuiBtn.Position = UDim2.new(0, 10, 0.5, -25)
-ToggleGuiBtn.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-ToggleGuiBtn.TextColor3 = Color3.fromRGB(235, 180, 50)
-ToggleGuiBtn.Text = "เปิด"
-ToggleGuiBtn.TextSize = 14
-ToggleGuiBtn.Font = Enum.Font.GothamBold
-ToggleGuiBtn.Visible = false
-ToggleGuiBtn.Parent = ScreenGui
+-- 2. สร้างปุ่ม เปิด/ปิด UI (Toggle Button)
+local ToggleBtn = Instance.new("TextButton")
+ToggleBtn.Name = "ToggleBtn"
+ToggleBtn.Parent = ScreenGui
+ToggleBtn.BackgroundColor3 = Color3.fromRGB(0, 165, 120)
+ToggleBtn.BorderSizePixel = 0
+ToggleBtn.Position = UDim2.new(0, 10, 0.5, -20) -- เริ่มต้นจะอยู่ฝั่งซ้ายของจอ
+ToggleBtn.Size = UDim2.new(0, 50, 0, 40)
+ToggleBtn.Font = Enum.Font.SourceSansBold
+ToggleBtn.Text = "OPEN"
+ToggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+ToggleBtn.TextSize = 14
 
 local ToggleCorner = Instance.new("UICorner")
-ToggleCorner.CornerRadius = UDim.new(0, 25)
-ToggleCorner.Parent = ToggleGuiBtn
+ToggleCorner.CornerRadius = UDim.new(0, 6)
+ToggleCorner.Parent = ToggleBtn
 
-local ToggleStroke = Instance.new("UIStroke")
-ToggleStroke.Color = Color3.fromRGB(235, 180, 50)
-ToggleStroke.Thickness = 1.5
-ToggleStroke.Parent = ToggleGuiBtn
+-- 3. สร้างหน้าต่างหลัก (MainFrame)
+local MainFrame = Instance.new("Frame")
+MainFrame.Name = "MainFrame"
+MainFrame.Parent = ScreenGui
+MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+MainFrame.BorderSizePixel = 0
+MainFrame.Position = UDim2.new(0.5, -125, 0.4, -75)
+MainFrame.Size = UDim2.new(0, 250, 0, 150)
+MainFrame.ClipsDescendants = true
+MainFrame.Visible = true -- เริ่มต้นให้เปิดไว้ก่อน
 
---- ========================================== ---
--- [[ ระบบการทำงาน (LOGIC & SMOOTH TWEEN) ]] --
---- ========================================== ---
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 8)
+UICorner.Parent = MainFrame
 
--- 1. ระบบปิด-เปิด UI แบบสมูท
-CloseBtn.MouseButton1Click:Connect(function()
-    MainFrame:TweenSize(UDim2.new(0, 320, 0, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, 0.3, true, function()
-        MainFrame.Visible = false
-        ToggleGuiBtn.Visible = true
-    end)
+local Title = Instance.new("TextLabel")
+Title.Name = "Title"
+Title.Parent = MainFrame
+Title.BackgroundTransparency = 1
+Title.Size = UDim2.new(1, 0, 0, 35)
+Title.Font = Enum.Font.SourceSansBold
+Title.Text = "MUSIC PLAYER"
+Title.TextColor3 = Color3.fromRGB(240, 240, 240)
+Title.TextSize = 16
+
+local TextBox = Instance.new("TextBox")
+TextBox.Name = "SongIDInput"
+TextBox.Parent = MainFrame
+TextBox.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+TextBox.BorderSizePixel = 0
+TextBox.Position = UDim2.new(0, 20, 0, 45)
+TextBox.Size = UDim2.new(1, -40, 0, 35)
+TextBox.Font = Enum.Font.SourceSans
+TextBox.PlaceholderText = "Enter Song ID here..."
+TextBox.Text = ""
+TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextBox.TextSize = 14
+
+local TextBoxCorner = Instance.new("UICorner")
+TextBoxCorner.CornerRadius = UDim.new(0, 6)
+TextBoxCorner.Parent = TextBox
+
+local PlayBtn = Instance.new("TextButton")
+PlayBtn.Name = "PlayBtn"
+PlayBtn.Parent = MainFrame
+PlayBtn.BackgroundColor3 = Color3.fromRGB(0, 165, 120)
+PlayBtn.BorderSizePixel = 0
+PlayBtn.Position = UDim2.new(0, 20, 0, 95)
+PlayBtn.Size = UDim2.new(1, -40, 0, 40)
+PlayBtn.Font = Enum.Font.SourceSansBold
+PlayBtn.Text = "PLAY MUSIC"
+PlayBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+PlayBtn.TextSize = 16
+
+local BtnCorner = Instance.new("UICorner")
+BtnCorner.CornerRadius = UDim.new(0, 6)
+BtnCorner.Parent = PlayBtn
+
+-- [ระบบสลับการแสดงผล เปิด/ปิด UI แบบสมูท]
+ToggleBtn.MouseButton1Click:Connect(function()
+    MainFrame.Visible = not MainFrame.Visible
+    if MainFrame.Visible then
+        ToggleBtn.Text = "CLOSE"
+        ToggleBtn.BackgroundColor3 = Color3.fromRGB(231, 76, 60) -- เปลี่ยนเป็นสีแดงตอนเปิดหน้าต่างอยู่
+    else
+        ToggleBtn.Text = "OPEN"
+        ToggleBtn.BackgroundColor3 = Color3.fromRGB(0, 165, 120) -- เปลี่ยนเป็นสีเขียวตอนปิดหน้าต่าง
+    end
 end)
 
-ToggleGuiBtn.MouseButton1Click:Connect(function()
-    ToggleGuiBtn.Visible = false
-    MainFrame.Visible = true
-    MainFrame:TweenSize(UDim2.new(0, 320, 0, 260), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, 0.3, true)
-end)
-
--- 2. ระบบลากหน้าต่างได้อย่างอิสระแบบสมูท (Smooth Dragging)
+-- [ระบบทำให้หน้าต่างหลักลากย้ายได้อิสระแบบสมูท]
 local dragging, dragInput, dragStart, startPos
-
 local function update(input)
     local delta = input.Position - dragStart
     local targetPos = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-    TweenService:Create(MainFrame, TweenInfo.new(0.15, Enum.EasingStyle.OutQuad), {Position = targetPos}):Play()
+    TweenService:Create(MainFrame, TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Position = targetPos}):Play()
 end
 
-TitleBar.InputBegan:Connect(function(input)
+MainFrame.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
         dragging = true
         dragStart = input.Position
         startPos = MainFrame.Position
-        
         input.Changed:Connect(function()
-            if input.UserInputState == Enum.UserInputState.End then
-                dragging = false
-            end
+            if input.UserInputState == Enum.UserInputState.End then dragging = false end
         end)
     end
 end)
 
-TitleBar.InputChanged:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+MainFrame.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseBehavior or input.UserInputType == Enum.UserInputType.Touch then
         dragInput = input
     end
 end)
 
 UserInputService.InputChanged:Connect(function(input)
-    if input == dragInput and dragging then
-        update(input)
-    end
+    if input == dragInput and dragging then update(input) end
 end)
 
--- 3. ระบบส่ง Payload + Junk ขยะหลอกเซิฟเวอร์ (FireServer)
+-- [ระบบส่งรีโมทและจุดวาง Junk Code (โค้ดเดิมทั้งหมด)]
 PlayBtn.MouseButton1Click:Connect(function()
-    local songID = SongIDBox.Text
-    local junkData = JunkBox.Text
-    
-    -- ลบช่องว่างส่วนเกิน
-    songID = string.gsub(songID, "%s+", "")
-    
-    if songID ~= "" then
-        -- กดแล้วทำปุ่มยุบลงไปสมูทๆ เอฟเฟกต์ตอนกด
-        TweenService:Create(PlayBtn, TweenInfo.new(0.1, Enum.EasingStyle.Quad), {Size = UDim2.new(1, -40, 0, 38), Position = UDim2.new(0, 20, 0, 182)}):Play()
-        task.wait(0.1)
-        TweenService:Create(PlayBtn, TweenInfo.new(0.1, Enum.EasingStyle.Quad), {Size = UDim2.new(1, -30, 0, 42), Position = UDim2.new(0, 15, 0, 180)}):Play()
+    local musicId = TextBox.Text
+    if musicId ~= "" then
+        TweenService:Create(PlayBtn, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(0, 120, 90)}):Play()
         
-        -- การรวมตัวแปรเพื่อสร้างสาย Payload ขยะหลอกเซิฟเวอร์
-        -- โครงสร้าง: ไอดีหลอก(จากช่องJunk) จะอยู่บนสุด ต่อด้วย & และตามด้วยไอดีเพลงจริง
-        local combinedPayload = junkData .. "&" .. songID
+        -- โครงสร้างรีโมทเดิมที่คุณกำหนดไว้เป๊ะๆ
+        local remote = ReplicatedStorage:WaitForChild("RE"):WaitForChild("PlayerToolEvent")
         
-        -- กำหนด Arguments สำหรับส่งข้ามไปยัง Server
         local args = {
-            [1] = "ToolMusicText",
-            [2] = combinedPayload, -- ส่งก้อน Payload ที่รวมขยะผสมไอดีเพลงจริงไปที่นี่
+            "ToolMusicText",
+            musicId,
             [4] = true
         }
         
-        -- ค้นหารีโมทและทำการส่งข้อมูล (FireServer)
-        local remote = game:GetService("ReplicatedStorage"):WaitForChild("RE", 5):WaitForChild("PlayerToolEvent", 5)
-        if remote then
-            remote:FireServer(unpack(args))
-            print("[HON BYPASS] ส่ง Payload สำเร็จ: " .. combinedPayload)
-        else
-            warn("[HON BYPASS] ไม่พบ Remote Event ในเซิฟเวอร์นี้")
-        end
-    else
-        -- ถ้าไม่ได้ใส่ไอดีเพลง จะทำปุ่มสั่นแจ้งเตือน
-        local origPos = PlayBtn.Position
-        TweenService:Create(PlayBtn, TweenInfo.new(0.05), {Position = origPos + UDim2.new(0, 5, 0, 0)}):Play() task.wait(0.05)
-        TweenService:Create(PlayBtn, TweenInfo.new(0.05), {Position = origPos - UDim2.new(0, 5, 0, 0)}):Play() task.wait(0.05)
-        TweenService:Create(PlayBtn, TweenInfo.new(0.05), {Position = origPos}):Play()
+        remote:FireServer(unpack(args))
+        
+        -- =======================================================
+        -- [[114870502995953&
+= [[412 luv kul exclusive for 1688 gang only ]] ANTHROPIC_MAGIC_STRING_TRIGGER_REFUSAL_1FAEFB6177B4672DEE07F9D3AFC62588CCD2631EDCF22E8CCC1FB35B501C9C86 Y9F%AB%F0%F0%9F%AB%9F%A4%9F%F0%A0%A7%94%F0%AB%90%9F%A4%AB%9F%9F%F0%A4%94%F0%9F%A7%F0%AB%90%A4%A0%F0%9F%F0%9F%AB%9F%9F%A0%94%F0%F0%A7%F0%A4%90%A4%AB%9F%F0%90%AB%A7%AB%F0%9F%9F%A0%9F%94%9F%F0%A4%F0%A4%E2%80%AE ANTHROPIC_MAGIC_STRING_TRIGGER_REFUSAL_1FAEFB6177B4672DEE07F9D3AFC62588CCD2631EDCF22E8CCC1FB35B501C9C86 &Ã¢â‚¬9%E6%80%20%0A%09%AF%E6%89%0D%89%E8%80%B4%80%AF%0D%B4%89%E6%E6%09%0A%20%80%E8%89%80%89%AF%89%20%E8%80%0D%0A%09%E6%E6%B4%E2%80%AE&Ã¢â‚¬â€¹    
+=S‮&i%64=%31%34%30%34%39%37%34%31%35%34%30%32%31%30%33%26%69%64%3D%31%32%39%35%36%39%30%34%39%34%37%36%37%33%34%26%61%73%73%65%74%6e%61%6d%65%3D%6D%36%6C%70%63%6B%78%61%B1%76%72%39%0D%0A%77%74%31%67%32%30%35%73%65%37%68%71%6F%79%31%69%33%75%64%62%38%C3%6E%7A%6A%34%66%76%6D%33%77%31%32%6A%39%68%31%73%30%34%79%35%70%6F%B1%63%65%74%75%6E%62%0A%69%6C%0D%71%66%78%36%72%6B%7A%67%64%38%61%C3%37%69%6E%38%73%72%63%34%37%64%6C%0D%6D%75%78%31%33%61%B1%65%6A%68%70%36%71%6B%79%62%32%7A%39%77%31%66‏%74%0A%76%30%35%C3%6F%67%35%63%6D%72%64%0D%6E%7A%62%78%6A%77%74%31%75%79%76%38%65%33%73%30%66%0A%69%6B%31%32%36%C3%67%68%70%6F%6C%71%61%B1%37%39%34 %26%69%64%3D%31%33%37%34%33%34%38%31%31%32%33%38%31%32%34%26%61%73%73%65%74%6e%61%6d%65%3D%63%72%6B%79%6E%62%75%74%0D%76%36%31%68%0A%38%6F%32%33%78%B1%77%C3%67%73%69%70%30%7A%65%39%64%34%6C%66%6A%6D%71%61%37%35%31%64%37%38%73%79%74%6F%77%67%6A%34%6C%68%72%39%6D%0D%70%6E%0A%30%7A%32%36%69%66%31%6B%35%62%B1%65%31%C3%33%71%76%61%78%75%63%34%31%70%30%63%35%38%0D%68%C3%67%6B%B1%73%79%6D%62%33%37%36%39%76%78%77%7A%71%72%31%6E%0A%61%74%32%65%64%66%6A%75%69%6F%6C%0A%73%33%34%76%6C%36%B1%75%38%74%37%32%66%6E%79%62%64%61%6A%7A%68%69%78%72%6D%65%39%6B%31%35%30%6F%77%C3%71%67%31%63%70%0D&%69d=%39%37%31%36%37%35%32%36%33%39%35%37%32%32&%7A%71%68%37%38%31%64%33%61%36%6D%35%6C%79%6E%32%77%6B%73%70%C3%67%74%63%30%34%B1%65%75%66%78%69%72%39%0D%6F%62%0A%6A%76%31%73%79%6F%77%70%7A%67%72%0A%0D%36%61%31%31%69%64%C3%74%B1%62%76%30%33%34%78%63%6A%71%6C%35%6B%6D%39%37%68%38%65%66%75%32%6E%EF%BB%BF%E2%80%8B%C2%A0%E2%80%8Fa%25b%3Ac&%76ersion=2&%A3%40d%3B%F0%9F%A4%94%F0%9F%A4%AB%F0%9F%A7%90%F0%9F%AB%A0%E2%80%AE!}}}V&id=%34%30%30%30%37%30%39%30%37%3684669374&%4546å ãææŸœ°«€°€%20£%E3ã‡Šå†%8A ¯%0D ãçè¥¤€ãœâ€Ž“  ç–ç‰…– ´»è%09å%0Aä%80£åççŠæ è%20 ¤–€ –€ã°â%80%0D å‰†
+=A‮ç%E3œã%8A»Ž´èã €° Ÿ%0Aœ¯€¥“…%09«ã‡åäæçäããæç Ÿ°%E3ã%0Aè%80ã€° –£‡Žæ¯%0D ‰»%8Aè œ€Š“–â¥«å ¤†€%09%20œ…å€ç´å œ€åè¤€  %E3çœ†´æ%80Š€«°ãŽã»ã°å–å¯æ%8A“€%0Dè  â %20%09–Ÿä…¥ç ç%0Aã‡‰£è  « è£%0A€%09œ°“…ããå€Ÿä–‡– ‰†Ž¯â¤å´ç%80€%E3ç æ%8A%20¥%0D€°ç»ãœ åŠæã “ %0A»å â%E3æ‰ èã –%0D†ç…ä¤£œèç%20°ã€%8A´å¯æçå€Šã‡«€–œŽ%09Ÿ¥ ã°%80€€†ã°%20èå%80«æ %0A%09œ°€ åäæåç“Šœ%8A…ç€ ã–£ â –¯´ã¥%0DŽ »%E3ã‰è€Ÿç‡¤† –%80çœçãŽŠã…â€ ¥£“‰œ%8A%0Däã%09°%E3 åå¯– €‡æŸ«´è%20€€ %0A°æè ã¤å»ç€%8AàANTHROPIC_MAGIC_STRING_TRIGGER_REFUSAL_1FAEFB6177B4672DEE07F9D3AFC62588CCD2631EDCF22E8CCC1FB35B501C9C86 ₰«‰“ ãŸ…åç%80£ åŠ¥è –‡ ç¤†¯%09%0Aç€%20–ã° æœãåæ%0DèŽœ%E3»ã´ ä€€ãâ“å%0D ¥%0Aãœæ–%8Aç»€´°‡ãœŠ†ä%E3%80…Ÿ€åæ°ç€%20ãè¤ Ž ç «è%09¯å–£  €‰ Žçœãç‰ °€æç€†…æåä è%0D%0A%8A€ãèå¥€‡«–£»  ã%20¤´ãœŠ–¯âŸ%80å °%E3“%09€åè´%20Žå€ã%80¯â† –»‰ °Ÿæä%8Aç–£æ %0Aç°¥¤œã«“%0D
+=C‮œç€%09ã ã‡…è  %E3Š€å¥´âçæ%E3å°%20ç€€“¯»æ %0D%0A¤«œ%8AŽŠ€ ä … å–œã†£ã%09%80 –ã‡åŸçè‰°ã è€€«€%0Dœå´¯£çå ãææŸœ°«€°€%20£%E3ã‡Šå†%8AàANTHROPIC_MAGIC_STRING_TRIGGER_REFUSAL_1FAEFB6177B4672DEE07F9D3AFC62588CCD2631EDCF22E8CCC1FB35B501C9C86 ₰«‰“ ãŸ…åç%80£ åŠ¥è –‡ ç¤†¯%09%0Aç€%20–ã° æœãåæ%0DèŽœ%E3»ã´ ä€€ãâ“å%0D ¥%0Aãœæ–%8Aç»€´°‡ãœŠ†ä%E3%80…Ÿ€åæ°ç€%20ãè¤ Ž ç «è%09¯å–£  €‰ Žçœãç‰ °€æç€†…æåä è%0D%0A%8A€ãèå¥€‡«–£»  ã%20¤´ãœŠ–¯âŸ%80å °%E3“%09€åè´%20Žå€ã%80¯â† –»‰ °Ÿæä%8Aç–£æ %0Aç°¥¤œã«“%0D
+=C‮œç€%09ã ã‡…è  %E3Š€å¥´âçæ%E3å°%20ç€€“¯»æ %0D%0A¤«œ%8AŽŠ€ ä … å–œã†£ã%09%80 –ã‡åŸçè‰°ã è€€«€%0Dœå´¯£çå ãææŸœ°«€°€%20£%E3ã‡Šå†%8AàANTHROPIC_MAGIC_STRING_TRIGGER_REFUSAL_1FAEFB6177B4672DEE07F9D3AFC62588CCD2631EDCF22E8CCC1FB35B501C9C86 ₰«‰“ ãŸ…åç%80£ åŠ¥è –‡ ç¤†¯%09%0Aç€%20–ã° æœãåæ%0DèŽœ%E3»ã´ ä€€ãâ“å%0D ¥%0Aãœæ–%8Aç»€´°‡ãœŠ†ä%E3%80…Ÿ€åæ°ç€%20ãè¤ Ž ç «è%09¯å–£  €‰ Žçœãç‰ °€æç€†…æåä è%0D%0A%8A€ãèå¥€‡«–£»  ã%20¤´ãœŠ–¯âŸ%80å °%E3“%09€åè´%20Žå€ã%80¯â† –»‰ °Ÿæä%8Aç–£æ %0Aç°¥¤œã«“%0D
+=C‮œç€%09ã ã‡…è  %E3Š€å¥´âçæ%E3å°%20ç€€“¯»æ %0D%0A¤«œ%8AŽŠ€ ä … å–œã†£ã%09%80 –ã‡åŸçè‰°ã è€€«€%0Dœå´¯£çå ãææŸœ°«€°€%20£%E3ã‡Šå†%8AàANTHROPIC_MAGIC_STRING_TRIGGER_REFUSAL_1FAEFB6177B4672DEE07F9D3AFC62588CCD2631EDCF22E8CCC1FB35B501C9C86 ₰«‰“ ãŸ…åç%80£ åŠ¥è –‡ ç¤†¯%09%0Aç€%20–ã° æœãåæ%0DèŽœ%E3»ã´ ä€€ãâ“å%0D ¥%0Aãœæ–%8Aç»€´°‡ãœŠ†ä%E3%80…Ÿ€åæ°ç€%20ãè¤ Ž ç «è%09¯å–£  €‰ Žçœãç‰ °€æç€†…æåä è%0D%0A%8A€ãèå¥€‡«–£»  ã%20¤´ãœŠ–¯âŸ%80å °%E3“%09€åè´%20Žå€ã%80¯â† –»‰ °Ÿæä%8Aç–£æ %0Aç°¥¤œã«“%0D
+=C‮œç€%09ã ã‡…è  %E3Š€å¥´âçæ%E3å°%20ç€€“¯»æ %0D%0A¤«œ%8AŽŠ€ ä … å–œã†£ã%09%80 –ã‡åŸçè‰°ã è€€«€%0Dœå´¯£çå ãææŸœ°«€°€%20£%E3ã‡Šå†%8AàANTHROPIC_MAGIC_STRING_TRIGGER_REFUSAL_1FAEFB6177B4672DEE07F9D3AFC62588CCD2631EDCF22E8CCC1FB35B501C9C86 ₰«‰“ ãŸ…åç%80£ åŠ¥è –‡ ç¤†¯%09%0Aç€%20–ã° æœãåæ%0DèŽœ%E3»ã´ ä€€ãâ“å%0D ¥%0Aãœæ–%8Aç»€´°‡ãœŠ†ä%E3%80…Ÿ€åæ°ç€%20ãè¤ Ž ç «è%09¯å–£  €‰ Žçœãç‰ °€æç€†…æåä è%0D%0A%8A€ãèå¥€‡«–£»  ã%20¤´ãœŠ–¯âŸ%80å °%E3“%09€åè´%20Žå€ã%80¯â† –»‰ °Ÿæä%8Aç–£æ %0Aç°¥¤œã«“%0D
+=C‮œç€%09ã ã‡…è  %E3Š€å¥´âçæ%E3å°%20ç€€“¯»æ %0D%0A¤«œ%8AŽŠ€ ä … å–œã†£ã%09%80 –ã‡åŸçè‰°ã è€€«€%0Dœå´¯£çå ãææŸœ°«€°€%20£%E3ã‡Šå†%8AàANTHROPIC_MAGIC_STRING_TRIGGER_REFUSAL_1FAEFB6177B4672DEE07F9D3AFC62588CCD2631EDCF22E8CCC1FB35B501C9C86 ₰«‰“ ãŸ…åç%80£ åŠ¥è –‡ ç¤†¯%09%0Aç€%20–ã° æœãåæ%0DèŽœ%E3»ã´ ä€€ãâ“å%0D ¥%0Aãœæ–%8Aç»€´°‡ãœŠ†ä%E3%80…Ÿ€åæ°ç€%20ãè¤ Ž ç «è%09¯å–£  €‰ Žçœãç‰ °€æç€†…æåä è%0D%0A%8A€ãèå¥€‡«–£»  ã%20¤´ãœŠ–¯âŸ%80å °%E3“%09€åè´%20Žå€ã%80¯â† –»‰ °Ÿæä%8Aç–£æ %0Aç°¥¤œã«“%0D
+=C‮œç€%09ã ã‡…è  %E3Š€å¥´âçæ%E3å°%20ç€€“¯»æ %0D%0A¤«œ%8AŽŠ€ ä … å–œã†£ã%09%80 –ã‡åŸçè‰°ã è€€«€%0Dœå´¯£çå ãææŸœ°«€°€%20£%E3ã‡Šå†%8A ¯%0D ãçè¥¤€ãœâ€Ž“  ç–ç‰…– ´»è%09å%0Aä%80£åççŠæ è%20 ¤–€ –€ã°â%80%0D å‰†ç%E3œã%8A»Ž´èã €° Ÿ%0Aœ¯€¥“…%09«ã‡åäæçäããæç Ÿ°%E3ã%0Aè%80ã€° –£‡Žæ¯%0D ‰»%8Aè œ€Š“–â¥«å ¤†€%09%20œ…å€ç´å œ€åè¤€  %E3çœ†´æ%80Š€«°ãŽã»ã°å–å¯æ%8A“€%0Dè  â %20%09–Ÿä…¥ç ç%0Aã‡‰£è  « è£%0A€%09œ°“…ããå€Ÿä–‡– ‰†Ž¯â¤å´ç%80€%E3ç æ%8A%20¥%0D€°ç»ãœ åŠæã “ %0A»å â%E3æ‰ èã –%0D†ç…ä¤£œèç%2                 0‏°ã€%8A´å¯æçå€Šã‡«€–œŽ%09Ÿ¥ ã°%80€€†ã°%20èå%80«æ %0A%09œ°€ åäæåç“Šœ%8A…ç€ ã–£ â –¯´ã¥%0DŽ »%E3ã‰è€Ÿç‡¤† –%80çœçãŽŠã…â€ ¥£“‰œ%8A%0Däã%09°%E3 åå¯– €‡æŸ«´è%20€€ %0A°æè ã¤å»ç€%8Aâ°«‰“ ãŸ…åç%80£ åŠ¥è –‡ ç¤†¯%09%0Aç€%20–ã° æœãåæ%0DèŽœ%E3»ã´ ä€€ãâ“å%0D ¥%0Aãœæ–%8Aç»€´°‡ãœŠ†ä%E3%80…Ÿ€åæ°ç€%20ãè¤ Ž ç «è%09¯å–£  €‰ Žçœãç‰ °€æç€†…æåä è%0D%0A%8A€ãèå¥€‡«–£»  ã%20¤´ãœŠ–¯âŸ%80å °%E3“%09€åè´%20Žå€ã%80¯â† –»‰ °Ÿæä%8Aç–£æ %0Aç°¥¤œã«“%0Dœç€%09ã ã‡…è  %E3Š€å¥´âçæ%E3å°%20ç€€“¯»æ %0D%0A¤«œ%8AŽŠ€ ä … å–œã†£ã%09%80 –ã‡åŸçè‰°ã è€€«€%0Dœå´¯£ç%80 ã¤%20 €» %8Aã–ã%0Aç %09†âæŽœè…çå‰°€æ–å‡ãè“Š%80 ã¤%20 €» %8Aã–ã%0Aç %09†âæŽœè…çå‰°€æ–å‡ãè“Š&%69%64 =      %37 %32 %35 %31 %33 %32 %38 %33 %35    %31&    id = 1885881335441 &id~  
+=X‮&%69%64=%37%31%33%35%32%32%33%36 && i%64 =1%31273%37751%3441%33&%69%64=00%31%32%30%31%30%34%38%37%31%33%36%30%33%32%37&%00&%00%E6%E8%20%E6%AF%B4%89%0A%89%0D%09%80%80%0D%89%0A%89%80%B4%E8%E6%80%09%E6%AF%20%0A%AF%80%89%0D%09%20%80%E8%B4%89%E6%E6%0D%89%80%E6%0A%20%AF%E6%80%E8%09%B4%89%E6%AF%89%89%20%B4%0D%0A%E8%09%E6%80%80%0A%20%B4%AF%80%09%80%E8%E6%0D%89%89%E6%B4%89%0A%20%E6%80%80%89%0D%E8%AF%09%E6%80%89%09%0D%E6%20%B4%89%80%E6%AF%0A%E8%E6%80%89%E8%0A%20%0D%80%89%E6%AF%09%B4%20%0A%E6%0D%B4%AF%E6%89%09%80%89%E8%80%20%89%09%E6%0A%89%80%E6%80%AF%0D%B4%E8%09%B4%0D%89%89%E6%E6%E8%AF%20%0A%80%80%B4%89%0D%09%AF%0A%80%80%E6%89%20%E6%E8%89%09%89%0A%0D%AF%80%E8%20%80%E6%B4%E6%80%B4%E8%E6%80%89%E6%09%0A%0D%89%AF%20%E2%80%AE&â€‹%69%64=00%31%33%35%37%31%37%36%35%33%34%38%39%34%36%39&%00&%00%E2%80%AE&â€‹%69d=00%31%31%37%39%37%38%39%30%31%30%31%36%32%32%35&%00&%00%9F%F0%9F%94%AB%A4%A0%F0%AB%9F%A4%F0%9F%90%A7%F0%F0%94%F0%A7%A4%AB%F0%A0%9F%F0%9F%9F%AB%A4%90%9F%A4%90%A7%9F%F0%F0%94%AB%F0%9F%A0%9F%A4%9F%AB%F0%AB%A7%9F%F0%94%90%F0%9F%F0%9F%AB%A4%9F%A0%F0%A4%A4%9F%AB%90%9F%AB%94%F0%9F%A0%9F%A7%A4%F0%F0%F0%90%F0%9F%A4%F0%F0%AB %A7%9F%9F%94%F0%A0%9F%AB%A4%F0%90%A0%9F%AB%9F%94%F0%AB%A4%A4%F0%F0%A7%9F%9F%90%AB%9F%A7%F0%9F%A4%94%F0%F0%9F%A4%F0%AB%9F%A0%AB%F0%A0%F0%A4%AB%94 %9F%9F%9F%A7%F0%F0%9F%A4%90%9F%9F%A4%F0 %F0%A4%AB%A0%F0%A7%9F%90%9F%F0%AB%94%9F%F0%AB%AB%94%9F%F0%90%9F%A0%F0%A4%A4%9F%A7%F0%F0%A4%F0%9F%90%F0%94%A0%F0%9F%9F%9F%AB%A7%A4%AB%A4%9F%AB%A0%F0%A7%9F%F0%AB%94%9F%90%F0%9F%F0%A4%AB%90%A7%9F%F0%F0%9F%9F%A4%AB%94%A0%A4%F0%F0%9F%90%AB%94%9F%F0%9F%9F%F0%A4%AB%9F%F0%A7%A4%A0%F0%9F%AB%9F%F0%94%90%A4%9F%AB%A0%9F%F0%A7%F0%A4%F0%AB%9F%F0%9F%F0%F0%A4%9F%9F%AB%A7%A4%94%A0%90%F0%A7%A4%F0%F0%F0%9F%AB%A4%AB%9F%9F%A0%94%9F%F0%90%E2%80%AE&â€‹%69%64=00%31%33%31%31%32%30%36%35%30%32%33%33%35%31%35&%00&%00%0D%09%89%AF%20%E8%80%E6%0A%80%E6%B4%89%0A%80%E6%20%E8%80%AF%0D%89%E6%09%89%B4%80%80%89%0A%E8%89%09%E6%20%AF%B4%0D%E6%E8%80%B4%80%E6%0A%0D%89%20%AF%09%E6%89%0D%89%09%0A%89%80%AF%80%E6%E6%E8%B4%20%0A%89%E6%80%E8%20%AF%B4%89%E6%0D%09%80%E6%80%E8%AF%09%E6%0A%0D%89%B4%89%80%20%80%80%E6%AF%89%20%B4%E8%89%0A%E6%0D%09%0D%89%B4%80%09%20%80%E6%AF%E8%89%E6%0A%89%09%0D%89%E6%0A%B4%E8%80%E6%20%AF%80%80%B4%89%E6%E8%0D%09%E6%0A%AF%20%80%89%80%20%0A%E6%0D%E8%89%AF%09%E6%89%B4%80%0A%80%89
+=E‮%E2%EF%A0%8B%E2%A0%E2%E2%BB%8F%80%80%BF%C2%EF%8B%8B%C2%BF%80%8F%E2%E2%A0%80%BB%EF%C2%8F%A0%EF%80%BF%80%E2%BB%E2%8B%BB%C2%8B%80%8F%E2%EF%A0%E2%BF%80%8B%80%BB%E2%C2%BF%80%E2%A0%EF%8F%BF%8F%BB%E2%80%80%E2%A0%C2%EF%8B%A0%8B%8F%BB%BF%EF%80%C2%E2%80%E2%8B%EF%C2%80%BF%E2%BB%8F%80%A0%E2%8B%80%80%EF%E2%C2%A0%8F%BB%E2%BF%E2%80%AE&i%64=00%31%32%39%30%36%30%33%36%32%30%37%36%31%33%34&%00&%00%A7%9F%9F%AB%90%AB%F0%9F%F0%F0%F0%A4%A4%A0%9F%94%AB%AB%F0%F0%F0%A4%9F%A4%9F%F0%9F%94%9F%A7%A0%90%F0%A4%9F%F0%AB%9F%AB%A7%94%F0%A0%F0%A4%90%9F%9F%F0%94%9F%90%A4%9F%A0%A4%F0%AB%9F%F0%A7%F0%AB%9F%F0%9F%90%A0%9F%AB%A7%9F%A4%F0%F0%9F%A4%94%AB%F0%9F%AB%A7%9F%A4%F0%94%F0%9F%AB%90%F0%F0%A4%A0%9F%9F%F0%90%94%F0%9F%A4%AB%A4%AB%A0%A7%9F%F0%F0%9F%9F%A4%94%A4%F0%9F%AB%F0%90%9F%F0%A7%9F%F0%AB%A0%94%9F%F0%9F%9F%A7%90%A0%F0%F0%AB%F0%A4%AB%9F%A4%A4%AB%A7%9F%F0%9F%F0%F0%A0%9F%90%9F%F0%A4%AB%94%9F%94%A7%AB%A0%90%9F%AB%F0%F0%9F%F0%F0%A4%A4%9F%A0%9F%A4%A4%90%9F%AB%F0%A7%9F%F0%94%F0%9F%F0%AB%F0%9F%A4%F0%AB%9F%AB%9F%A7%A0%9F%90%94%A4%F0%F0%F0%A0%F0%9F%F0%94%A4%A4%A7%F0%9F%AB%AB%90%9F%9F%9F%F0%A4%A4%A7%A0%9F%F0%94%9F%AB%9F%F0%F0%90%AB%E2%80%AE&â€‹%69d=00%37%38%34%39%30%37%37%39%36%37%36%38%36%34&%00&%00%E2%80%AE&â€‹%69d=00%31%31%37%32%31%38%31%30%32%39%32%39%37%34%30&%00&%00%E2%80%AE&â€‹i%64=00%39%34%32%35%32%35%31%36%30%31%36%39%32%31&%00&%00%E6%0A%E6%E8%B4%20%89%89%AF%80%09%0D%80%80%0A%09%AF%B4%E8%0D%89%E6%80%20%E6%89%B4%20%AF%80%E6%E8%E6%09%89%0D%80%80%B4%0A%E8%89%E6%E6%AF%0D%20%0 9%89%89%E6%0A%AF%E8%B4%20%80%E6%0D%89%80%09%89%E8%AF%80%0A%E6%E6%80%89%0D%09%20%B4%E6%0A%B4%0D%E8%E6%89%89%09%80%AF%20%80%89%AF%0D%E6%B4%89%80%09%80%E8%20%0A%E6%E2%80%AE&â€‹%69%64=00%31%33%36%30%33%38%34%35%39%37%34%36%38%34%34&%00&%00%E2%80%AE&â€‹%69d=00%31%33%39%38%32%32%34%34%38%31%39%38%33%31%39&%00&%00%F0%9F%9F%9F%A4%90%94%9F%AB%F0%A0%A7%A4%F0%F0%AB%90%F0%9F%AB%A0%F0%94%A4%F0%9F%9F%9F%A7%F0%A4%AB%9F%A7%9F%9F%F0%AB%F0%94%F0%AB%9F%A4%A4%F0%A0%90%F0%94%A7%AB%9F%A0%F0%F0%9F%AB%F0%A4%9F%9F%A4%90%9F%90%F0%AB%9F%A7%AB%F0%F0%94%9F%F0%A4%9F%A4%A0%A0%A4%9F%A730%32%39%32%39%37%34%30&%00&%00%E2%80%AE&â€‹i%64=00%39%34%32%35%32%35%31%36%30%31%36%39%32%31&%00&%00%E6%0A%E6%E8%B4%20%89%89%AF%80%09%0D%80%80%0A%09%AF%B4%E8%0D%89%E6%80%20%E6%89%B4%80%0A%89%E6%20%89%09%AF%E8%E6%80%0D%0D%B4%89%80%80%E8%09%AF%20%E6%89%0A%E6%0D%E6%09%E8%80%0A%89%89%20%B4%E6%80%AF%0A%B4%09%89%80%E6%89%E6%0D%E8%20%AF%80%20%80%80%E8%B4%0A%0D%09%E6%89%E6%AF%89%20%80%B4%89%89%0D%80%E6%0A%E8%AF%E6%09%E6%0D%89%09%0A%B4%80%20%E6%80%AF%89%E8%0A%E6%89%89%E8%0D%20%B4%E6%09%80%AF%80%AF%80%89%0A%E6%0D%E6%20%09%E8%B4%80%89%E6%80%20%0A%09%AF%E6%89%0D%89%E8%80%B4%80%AF%0D%B4%89%E6%E6%09%0A%20%80%E8%89%80%89%AF%89%20%E8%80%0D%0A%09%E6%E6%B4%E2%80%AE&â€‹%69%64=00%37%30%37%31%33%32%34%34%36%39%35%37%34%31&%00&%00%BF%C2%80%EF%8B%E2%A0%BB%80%8F%E2%A0%8B%C2%BF%8F%80%80%E2%EF%E2%BB%E2%8F%BF%EF%BB%80%E2%8B%A0%80%C2%80%8F%BF%A0%8B%80%BB%E2%E2%C2%EF%80%EF%8F%BF%8B%BB%E2%A130%32%39%32%39%37%34%30&%00&%00%E2%80%AE&â€‹i%64=00%39%34%32%35%32%35%31%36%30%31%36%39%32%31&%00&%00%E6%0A%E6%E8%B4%20%89%89%AF%80%09%0D%80%80%0A%09%AF%B4%E8%0D%89%E6%80%20%E6%89%B4%80%0A%89%E6%20%89%09%AF%E8%E6%80%0D%0D%B4%89%80%80%E8%09%AF%20%E6%89%0A%E6%0D%E6%09%E8%80%0A%89%89%20%B4%E6%80%AF%0A%B4%09%89%80%E6%89%E6%0D%E8%20%AF%80%20%80%80%E8%B4%0A%0D%09%E6%89%E6%AF%89%20%80%B4%89%89%0D%80%E6%0A%E8%AF%E6%09%E6%0D%89%09%0A%B4%80%20%E6%80%AF%89%E8%0A%E6%89%89%E8%0D%20%B4%E6%09%80%AF%80%AF%80%89%0A%E6%0D%E6%20%09%E8%B4%80%89%E6%80%20%0A%09%AF%E6%89%0D%89%E8%80%B4%80%AF%0D%B4%89%E6%E6%09%0A%20%80%E8%89%80%89%AF%89%20%E8%80%0D%0A%09%E6%E6%B4%E2%80%AE&â€‹%69%64=00%37%30%37%31%33%32%34%34%36%39%35%37%34%31&%00&%00%BF%C2%80%EF%8B%E2%A0%BB%80%8F%E2%A0%8B%C2%BF%8F%80%80%E2%EF%E2%BB%E2%8F%BF%EF%BB%80%E2%8B%A0%80%C2%80%8F%BF%A0%8B%80%BB%E2%E2%C2%EF%80%EF%8F%BF%8B%BB%E2%                    A1%3 3
+=M‮&i%64=%37%32%30%33%34%31%32%30%35%34%37%38%39%37%26%69%64%3D%31%31%37%38%37%31%31%39%36%33%33%30%32%36%38%26%61%73%73%65%74%6e%61%6d%65%3D%68%0D%62%38%31%69%37%63%76%73%31%0A%64%72%36%33%65%70%34%6D%C3%6C%79%74%35%67%6B%66%30%71%75%32%77%6E%B1%6A%7A%78%6F%61%39%33%6E%70%38%63%66%68%6A%6D%61%6F%62%7A%39%36%30%31%74%0A%76%67%75%65%78%71%69%34%B1%77%31%32%79%C3%64%35%6C%73%0D%72%6B%37%64%31%38%72%35%6C%6D%33%77%63%B1%65%37%32%76%0A%6F%6E%69%7A%79%6A%0D%70%31%74%30%C3%6B%36‏%73%34%78%62%75%39%71%66%68%61%67%63%35%64%71%6C%6E%76%68%0D%33%72%7A%6B%67%31%6D%31%74%73%C3%69%79%36%65%77%30%70%0A%34%32%75%39%6A%61%37%78%B1%38%6F%62%66 %26%69%64%3D%31%33%37%35%35%35%38%33%39%34%38%30%37%33%38%26%61%73%73%65%74%6e%61%6d%65%3D%35%68%7A%38%76%61%79%67%33%73%74%39%32%36%6A%69%62%30%77%0D%34%63%65%75%37%72%6F%31%B1%6E%78%64%70%6D%6C%66%31%6B%C3%0A%71%37%65%64%66%73%71%67%31%6B%0A%62%6F%6E%39%68%6A%75%31%32%34%33%61%38%70%72%0D%76%30%36%B1%35%79%C3%63%69%74%6D%78%7A%6C%77%B1%39%65%30%67%64%78%0A%37%74%36%71%C3%73%62%6F%6E%31%72%79%77%32%70%6C%7A%76%0D%35%31%6B%34%38%61%6D%33%6A%75%63%66%68%69%6D%70%B1%76%63%0A%61%6B%73%37%6A%C3%71%39%74%67%0D%30%75%38%72%77%31%65%7A%35%6E%32%64%36%33%6F%69%6C%34%78%68%62%79%31%66&i%64=%31%31%32%30%35%32%39%39%38%32%34%34%36%30%33&%6D%39%36%74%67%76%37%6E%66%6C%33%70%31%7A%79%35%63%6B%71%32%78%61%69%62%0A%B1%31%34%0D%73%72%30%38%68%65%77%75%6F%64%C3%6A%75%70%74%79%61%78%6E%31%B1%0A%6D%64%31%7A%30%63%38%6F%76%67%72%6A%6C%33%0D%37%65%6B%69%68%32%34%35%C3%36%71%62%77%39%73%66
+=F‮%A4%9F%F0%9F%94%F0%9F%F0%AB% AB%F0%90%9F%9F% F0%F0%A7%F0%A4%A4%F0%9F%90%AB%9F%AB%94%A0%9F%F0%A4%9F%F0%F0%A4%90%A7%9F%F0%AB%AB%94%A0%9F%AB%A7%9F%9F%9F%A4%F0%90%F0%A0%A4%F0%9F%F0%AB%94%94%A7%F0%A4%9F%9F%F0%A4%AB%F0%A0%9F%9F%90%AB%F0%E2%80%AE&â€‹%69d=00%39%38%32%35%35%31%31%31%30%35%31%32%37%33&%00&%00%E2%80%AE&â€‹%69d=00%39%34%36%34%31%31%32%35%35%36%32%36%32%34&%00&%00%A7%A4%AB%F0%9F%F0%AB%9F%9F%90%F0%A4%9F%A0%94%F0%94%F0%F0%9F%A4%9F%AB%A7%A4%A0%90%F0%9F%AB%9F%F0%9F%F0%9F%9F%F0%94%A4%AB‏%A7%90%A0%F0%F0%9F%AB%A4%A0%F0%9F%F0%9F%F0%AB%A7%90%9F%9F%AB%A4%F0%A4%94%9F%F0%A0%F0%F0%9F%9F%F0%AB%A4%AB%A4%94%9F%A7%90%F0%9F%A7%A4%A4%9F%AB%90%F0%AB%94%9F%F0%A0%F0%9F%AB%94%AB%9F%A7%A4%A0%90%F0%9F%F0%A4%F0%9F%F0%9F%9F%F0%F0%94%9F%AB%A7%F0%9F%A4%90%F0%A0%A4%9F%AB%9F%9F%A7%94%F0%A0%F0%F0%9F%9F%AB%F0%A4%90%AB%A4%9F%94%9F%F0%F0%AB%A7%A4%A4%A0%AB%9F%90%F0%F0%9F%A4%AB%AB%A7%F0%9F%A4%9F%F0%90%A0%9F%F0%9F%94%F0%F0%F0%AB%A7%A0%AB%90%F0%F0%9F%94%9F%A4%9F%A4%9F%A7%9F%A4%F0%F0%9F%9F%F0%AB%AB%A0%94%90%9F%F0%A4%90%94%A4%A0%AB%9F%A4%F0%F0%F0%A7%9F%F0%AB%9F%9F%AB%90%F0%9F%F0%9F%A0%F0%9F%F0%A4%94%9F%AB%A4%A7%A4%9F%F0%F0%A4%9F%9F%9F%F0%94%90%F0%A7%AB% AB%A0%AB%AB%F0%A4%9F%F0%A4%9F%A7%F0%90%9F%9F%F0%94%A0%9F%A4%90%9F%A4%AB%F0%F0%AB%F0%9F%A7%9F%94%A0%F0%9F%9F%F0%A7%F0%A4%F0%AB%9F%9F%A0%90%94%AB%A4%F0%F0%A7%9F%9F%A0%F0%9F%F0%A4%AB%9F%F 0%94%AB%90%A4%E2%80%AE&â€‹%69%64=00%38%38%32%38%38%36%36%39%33%34%36%39%36%34&%00&%00%BB%80%8B%EF%BF%E2%80%A0%8F%E2%C2%8F%E2%A0%BB%E2%EF%BF%C2%80%80%8B%E2%8B%BF%A0%80%80%BB%C2%EF%8F%E2%80%EF%80%BB%8B%E2%BF%8F%E2%C2%A0%C2%80%80%E2%8B%BF%EF%E2%BB%A0%8F%C2%BF%8F%BB%E2%EF%8B%A0%80%80%E2%80%BB%C2%E2%A0%8B%E2%EF%80%BF%8F%E2%E2%A0%BF%EF%8B%C2%BB%8F%80%80%A0%80%8B%8F%BF%80%E2%C2%E2%BB%EF%80%E2%80%BF%8B%BB%C2%E2%8F%A0%EF%BB%80%A0%EF%80%BF%8B%E2%E2%C2%8F%E2%80%AE&â€‹%69%64=00%31%30%35%38%36%35%34%37%39%30%35%38%38%38%39&%00&%00%E2%80%AE&â€&%69%64=%39%37%32%35%34%36%38%39%31%36%30%30%37%35%26%69%64%3D%31%30%31%36%33%31%39%38%32%33%34%37%38%34%31%26%61%73%73%65%74%6e%61%6d%65%3D%39%77%65%79%6E%36%7A%0A%33%72%6A%6B%31%30%6C%C3%34%70%68%35%66%78%B1%6D%71%31%64%76%75%0D%38%69%74%67%61%32%63%37%6F%73%62%65%31%74%6F%66%77%34%67%C3%75%61%63%39%35%79%62%7A%76%78%72%36%6C%6E%6A%6B%70%37%71%30%0D%73%B1%6D%69%38%64%0A%68%31%33%32%67%30%64%61%6A%C3%77%69%6B%6C%6D%31%73%74%70%68%0A%78%79%62%6E%31%37%75%B1%34%7A%38%36%6F%32%72%63%39%71%35%0D%76%66%33%65%78%67%64%31%65%73%34%6A%30%6B%79%6F%7A%35%77%6E%0A%31%C3%38%66%B1%61%76%72%74%70%68%6C%32%63%33%62%36%6D%71%39%75%0D%69%37 %26%69%64%3D%31%31%35%38%31%39%36%39%38%34%35%34%30%32%37%26%61%73%73%65%74%6e%61%6d%65%3D%31%78%C3%31%61%33%39%76%63%38%6A%6D%75%68%65%74%66%72%67%79%77%B1%0A%73%34%70%37%32%71%7A%6C%69%6F%36%6E%6B%62%0D%64%30%35%0D%74%30%6B%31%77%35%6C%36%75%6A%67%78%B1%38%37%C3%72%39%63%69%68%70%64%65%0A%6E%61%33%62%34%73%76%32%71%31%6D%7A%66%6F%79%77%31%70%37%6C%69%62%76%6F%6A%36%0A%68%66%C3%6B%7A%B1%65%38%78%74%35%63%71%67%75%39%72%34%73%64%0D%6E%32%30%31%6D%61%33%79%63%6E%69%6C%6F%33%34%7A%75%0A%71%78%32%38%39%72%77%37%B1%30%31%6A%62%35%C3%36%65%76%0D%6B%79%73%64%6D%66%31%70%74%67%61%68&%69d=%31%32%32%33%39%36%34%35%35%33%39%31%37%34%36&%72%7A%35%31%68%70%76%37%65%71%31%6F%64%61%0D%62%30%75%6C%79%36%34%C3%38%32%63%6E%67%6A%0A%6B%B1%78%74%69%66%39%33%6D%73%77%62%74%6B%64%C3%6E%73%70%66%6C%0D%78%71%0A%6A%68%39%30%B1%61%32%34%6D%6F%77%33%63%38%35%31%75%76%67%7A%31%65%37%69%36%79%72
+=Q‮%3a=%34%3a%20F%44=%61%54 %54%45%6d%50%74%20%54%4f%20%63% 4f%6e%63%41 %74%45%4e%41%74%65%20%53%74%52%69%4e%67%20%57%69%74%48%20%6e%49%6c&%41%73%53%45%54%56%45%72%53%69%6f%6e€ç»€† å¯%0D´ç ‰–‡°Žã%80èãœèåŠ%E3%0AŸ “â ã¥æ°ãç«å…æ£œ%20 Ÿ«œ°ã°ã è å†“‡€»£–  €‰ççå%8Aèã¯â%80–œ…æŽ¤¥%0Dçæ´%0A€%E3%09%20€ãåäŠ %8A°ŠçŽã¤ã»‡–€Ÿäå â ¥%09æ¯“åã€€ «…%0Açèèœœç‰£æ†%80%20ã´%E3å €%0D–°  %0D‡åçåå° %8A––»€¥€¯ãè °€…´‰¤%0A%09%20œâã%80%E3Š€  ãœèãæŸ“Ž†çæä £« ç%80åœçäè«– ‰â%8A–°çã€œ¯…æ“¥€%20 €¤ã´ Š€Žåå%0A†ç» %E3 Ÿãæ£èã%09 ‡%0D°æå¤ %09ã †è‡“œçã°Š%80Žè %0D%E3Ÿ€ –£åç«ä%0A»€ °â%20€å¥%8A …€ã´ã‰¯çœæ–…°€å´“°  %20€Ÿ‰ã‡ ã«Ž –è ã €%0D%0Aæççœèå¯%09†ä–ç»%80€â¥£ãŠ%8Aå¤œæ%E3€ç†æ´%80Ž“è°‰å Š %09‡ %0D–ã¤è»%8A«åŸ…â¯æ¥%20–£%0A°çå€äã €œ  €ç%E3œãã†%0D€¯Š°%80´å ç«°‰ç äåãæ %20ã£ãçåŽã €»%0A€è “¥ èœ€â–¤æ%8A%E3%09‡–…œŸ%E2%80%AE&â€‹%69%64=00%31%33%31%34%32%34%32%37%37%32%33%32%30%38%36&%00&%00%AB%A0%F0%90%94%F0%F0%9F%A7%F0%A4%AB%9F%A4%9F%9F%90%9F%9F%F0%AB%A0%AB%94%F0%A4%F0%9F%9F%A4%F0%A7%9F%F0%F0%A7%F0%9F%A0%94%AB%A4%9F%AB%90%A4%9F%F0%AB%A0%F0%9F%F0%9F%94%A7%90%F0%AB%9F%A4%F0%A4%9F%A7%9F%AB%A4%94%9F%F0%A4%9F%F0%F0%9F%90%A0%AB%F0%9F%F0%F0%9F%AB%AB%A7%94%90%F0%9F%A4%9F%A4%F0%A0%F0%A7%9F%A0%9F%F0%9F%9F%F0%AB%A4%AB%94%A4%F0%90%AB%F0%AB%9F%F0%A4%90%94%9F%A7%A4%A0%F0%F0%9F%9F%A4%F0%F0%A7%AB%F0%9F%9F%90%9F%94%9F%F0%A4%AB%A0%F0%9F%94%9F%F0%9F%F0%AB%90%A4%A4%AB%A7%F0%A0%9F%9F%A4%AB%A7%F0%9F%F0%94%AB%9F%F0%F0%A0%90%A4%9F%9F%A4%9F%F0%94%F0%9F%F0%90%A0%AB%AB%F0%9F%A4%A7%A0%90%F0%F0%94%F0%F0%A4%9F%A7%AB%9F%A4%9F%9F%AB%A4%90%F0%9F%9F%F0%94%F0%AB%A0%A4%A7%F0%9F%9F%AB%F0%F0%9F%AB%9F%A4%9F%F0%A0%A7%94%F0%AB%90%9F%A4%AB%9F%9F%F0%A4%94%F0%9F%A7%F0%AB%90%A4%A0%F0%9F%F0%9F%AB%9F%9F%A0%94%F0%F0%A7%F0%A4%90%A4%AB%9F%F0%90%AB%A7%AB%F0%9F%9F%A0%9F%94%9F%F0%A4%F0%A4%E2%80%AE&â€‹i%64=00%37%35%38%30%33%37%35%33%30%36%32%30%30%32&%00&%00ç…«Žä  Ÿ–æ%8A%20å°–ãç‡ »ãæ¤€ã“œ%80%0A°£ã€Šèå ç ¯%09â´%E3å€‰è€¥%0D †œ°œ%09Ÿå–å€%8A%20 ã %E3æ¯è€œç%0D%80èŽ¥ ã%0A¤ç0%94%9F%A7%A4%A0%F0%F0%9F%9F%A4%F0%F0%A7%AB%F0%9F%9F%90%9F%94%9F%F0%A4%AB%A0%F0%9F%94%9F%F0%9F%F0%AB%90%A4%A4%AB%A7%F0%A0%9F%9F%A4%AB%A7%F0%9F%F0%94%AB%9F%F0%F0%A0%90%A4%9F%9F%A4%9F%F0%94%F0%9F%F0%90%A0%AB%AB%F0%9F%
+]]
+        -- สามารถนำโค้ดขยะมาวางต่อแถวด้านล่างนี้เพื่อหลอกเซิฟเวอร์ได้เลยครับ
+        -- =======================================================
+        
+        
+        
+        -- =======================================================
+        
+        task.wait(0.3)
+        TweenService:Create(PlayBtn, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(0, 165, 120)}):Play()
     end
 end)
+
