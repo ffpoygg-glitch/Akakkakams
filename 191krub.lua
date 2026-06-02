@@ -1,3 +1,20 @@
+local AllowedIDs = {
+    [3876844265] = true,
+    [4591138168] = true,
+    [7266720927] = true,
+    [9802544328] = true,
+    [10411408488] = true,
+    [6030349781] = true,
+    [1697390697] = true, 
+    [9303389855] = true,  
+    [7356705432] = true  
+}
+
+if not AllowedIDs[game:GetService("Players").LocalPlayer.UserId] then
+    game:GetService("Players").LocalPlayer:Kick("ใครให้มึงใช้ไอพม่า")
+    return
+end
+
 local player = game:GetService("Players").LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
