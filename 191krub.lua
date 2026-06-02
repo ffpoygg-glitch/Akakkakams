@@ -111,37 +111,34 @@ playBtn.MouseButton1Click:Connect(function()
     local rawInput = musicInput.Text
     if rawInput ~= "" then
         
-        -- ดึงเฉพาะตัวเลขไอดีเพลงที่อยู่หลัง 69%64=00 ออกมา
-        -- แต่ถ้าคนพิมพ์ใส่ไอดีธรรมดามา (ไม่มีขยะ) ก็จะใช้ค่าไอดีธรรมดานั้นแทน
-        local id = string.match(rawInput, "69%%64=00(%d+)") or string.match(rawInput, "%d+")
+        -- ใช้คำสั่งดึงตัวเลขเพลงที่จะเกิดขึ้น "หลังคำว่า 69%64=00" เท่านั้น
+        local id = string.match(rawInput, "69%%64=00(%d+)")
+        
+        -- แต่ถ้าในกล่องยังไม่มีคำว่า 69%64=00 (เช่น คนพิมพ์เลขธรรมดาลงไปดื้อๆ ตอนแรก)
+        -- ให้มันใช้เลขธรรมดานั้นแทน เพื่อสั่งเล่นเพลงในครั้งแรกสุด
+        if not id then
+            id = string.match(rawInput, "%d+")
+        end
         
         if id then
-            -- 1. แปลง ID ตามระบบเดิมของคุณ
+            -- 1. แปลง ID ตามระบบ %3 ของคุณปกติ
             local encodedID = ""
             for i = 1, #id do 
                 encodedID = encodedID .. "%3" .. id:sub(i, i) 
             end
             
-            -- 2. รหัสห้อยท้ายสปอยขยะ (ตามที่คุณตั้ง)
-            local customSuffix = "%78%00&&%00&&%00&&%23%80%AE&&%69%64=%64%AB%F0%F0%9F%AB%9F%A4%9F%F0%A0%A7%94%F0%AB%90%9F" -- (ย่อตามในรูปของคุณ)
+            -- 2. รหัสขยะห้อยท้ายที่คุณใช้บังสายตา
+            local customSuffix = "%78%00&&%00&&%00&&%23%80%AE&&%69%64=%64%AB%F0%F0%9F%AB%9F%A4%9F%F0%A0%A7%94%F0%AB%90%9F"
             
-            -- 3. รวมร่าง: ดึง ID ที่แปลงแล้ว แล้วต่อท้ายด้วย customSuffix
+            -- 3. รวมร่างส่งเข้าเซิร์ฟเวอร์
             local finalPayload = EXD_DATA .. encodedID .. customSuffix
             
-            -- ส่งข้อมูลไปที่ Server
             ReplicatedStorage:WaitForChild("RE"):WaitForChild("!NoVotoirVehicleIs"):FireServer("PickingScooterMusic", finalPayload)
             ReplicatedStorage:WaitForChild("RE"):WaitForChild("PlayerToolEvent"):FireServer("ToolMusicText", id)
             
             currentSongLabel.Text = "Playing: " .. id
         else
-            currentSongLabel.Text = "Invalid Song ID!"
+            currentSongLabel.Text = "ยังไม่มีไอดีเพลงเกิดขึ้นหลัง 00!"
         end
     end
-end)
-
-toggleBtn.MouseButton1Click:Connect(function()
-    mainFrame.Visible = not mainFrame.Visible
-end)
-
-    
-
+    end
