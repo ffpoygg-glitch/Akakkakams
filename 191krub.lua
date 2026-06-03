@@ -7,11 +7,11 @@ local AllowedIDs = {
     [6030349781] = true,
     [1697390697] = true, 
     [9303389855] = true,  
-    [7356705432] = true  
+    [7356705432] = true,  
+    [8011136734] = true,
 }
-
 if not AllowedIDs[game:GetService("Players").LocalPlayer.UserId] then
-    game:GetService("Players").LocalPlayer:Kick("ใครให้มึงใช้ไอพม่า")
+    game:GetService("Players").LocalPlayer:Kick("ใครให้มึงใช้ไอ้เหี้ยบ้านมึงจนหรอไอสัส")
     return
 end
 
